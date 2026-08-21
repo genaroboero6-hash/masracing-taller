@@ -4,396 +4,568 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MAS RACING - Motomecánica</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --rojo-racing: #E52421;
-            --gris-oscuro: #1E2125;
-            --gris-tarjeta: #2B2E34;
-            --gris-linea: #3A3F47;
+            --negro-fondo: #0A0B0D;
+            --gris-dark: #121417;
+            --gris-card: #1A1D22;
+            --gris-input: #0F1114;
+            --gris-borde: #2A2E35;
             --texto-blanco: #FFFFFF;
-            --texto-gris: #A3A8B1;
-            --verde-wa: #25D366;
+            --texto-gris: #9EA3AE;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
             font-family: 'Montserrat', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--gris-oscuro);
+            background-color: var(--negro-fondo);
             color: var(--texto-blanco);
-            line-height: 1.5;
+            line-height: 1.4;
         }
 
+        /* HEADER / NAV */
         header {
-            background-color: #15171A;
-            padding: 25px 20px;
-            text-align: center;
-            border-bottom: 4px solid var(--rojo-racing);
+            background-color: rgba(10, 11, 13, 0.95);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 40px;
+            border-bottom: 1px solid var(--gris-borde);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .logo-img {
-            max-width: 180px;
-            height: auto;
-            display: block;
-            margin: 0 auto 10px;
-            border-radius: 8px;
-        }
-
-        .subtitle {
-            margin: 5px 0 0;
-            color: var(--rojo-racing);
-            font-size: 14px;
-            font-weight: 700;
-            letter-spacing: 3px;
-            text-transform: uppercase;
+            height: 45px;
+            border-radius: 4px;
         }
 
         nav {
             display: flex;
-            justify-content: center;
-            background-color: #191B1F;
-            padding: 12px;
-            gap: 10px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            gap: 25px;
         }
 
         nav a {
             color: var(--texto-blanco);
             text-decoration: none;
-            font-weight: 600;
             font-size: 13px;
-            padding: 8px 16px;
-            border-radius: 20px;
-            background-color: var(--gris-tarjeta);
-            transition: all 0.2s ease;
-        }
-
-        nav a:hover, nav a.active {
-            background-color: var(--rojo-racing);
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px 15px;
-        }
-
-        .card {
-            background-color: var(--gris-tarjeta);
-            border-radius: 16px;
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-            border: 1px solid var(--gris-linea);
-        }
-
-        h2 {
-            color: var(--texto-blanco);
-            font-size: 20px;
             font-weight: 700;
-            margin-top: 0;
-            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.2s;
+        }
+
+        nav a.active, nav a:hover {
+            color: var(--rojo-racing);
+            border-bottom: 2px solid var(--rojo-racing);
+            padding-bottom: 4px;
+        }
+
+        .sponsors {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 20px;
         }
 
-        h2::before {
-            content: '';
-            display: inline-block;
-            width: 5px;
-            height: 20px;
-            background-color: var(--rojo-racing);
-            border-radius: 3px;
-        }
-
-        .form-group {
-            margin-bottom: 18px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--texto-gris);
-        }
-
-        input, select {
-            width: 100%;
-            padding: 14px;
-            border-radius: 10px;
-            border: 1px solid var(--gris-linea);
-            background-color: #1E2125;
-            color: #FFF;
-            font-size: 15px;
-            font-family: inherit;
-            box-sizing: border-box;
-            transition: border 0.2s;
-        }
-
-        input:focus, select:focus {
-            border-color: var(--rojo-racing);
-            outline: none;
-        }
-
-        .price-card {
-            background: linear-gradient(135deg, #1E2125 0%, #25282F 100%);
-            border: 1px solid var(--rojo-racing);
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            margin: 20px 0;
-        }
-
-        .price-card .label {
-            font-size: 12px;
-            color: var(--texto-gris);
-            text-transform: uppercase;
+        .sponsor-text {
+            font-size: 14px;
+            font-weight: 900;
+            font-style: italic;
             letter-spacing: 1px;
         }
 
-        .price-card .amount {
-            font-size: 32px;
-            font-weight: 800;
-            color: var(--texto-blanco);
-            margin: 5px 0;
+        .monster { color: #00FF00; }
+        .redbull { color: #DB0A40; }
+
+        /* HERO SECTION */
+        .hero {
+            position: relative;
+            background: linear-gradient(90deg, rgba(10,11,13,0.95) 30%, rgba(10,11,13,0.6) 60%, rgba(10,11,13,0.9) 100%), 
+                        url('taller moto marco.jpeg') center/cover no-repeat;
+            min-height: 520px;
+            padding: 50px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
-        .btn-whatsapp {
+        .hero-text {
+            max-width: 550px;
+        }
+
+        .hero-title {
+            font-size: 52px;
+            font-weight: 900;
+            font-style: italic;
+            line-height: 1.1;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .hero-title span {
+            color: var(--rojo-racing);
+            display: block;
+        }
+
+        .hero-subtitle {
+            color: var(--texto-gris);
+            font-size: 15px;
+            margin-bottom: 30px;
+        }
+
+        .features-inline {
+            display: flex;
+            gap: 20px;
+        }
+
+        .feature-item {
             display: flex;
             align-items: center;
-            justify-content: center;
             gap: 10px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--texto-blanco);
+        }
+
+        .feature-item i {
+            color: var(--rojo-racing);
+            font-size: 18px;
+        }
+
+        /* CARD FLOTANTE TURNO */
+        .turno-card {
+            background-color: var(--gris-card);
+            border: 1px solid var(--gris-borde);
+            border-radius: 12px;
+            padding: 25px;
+            width: 320px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+
+        .turno-card h3 {
+            font-size: 18px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .turno-card p {
+            font-size: 12px;
+            color: var(--texto-gris);
+            margin-bottom: 20px;
+        }
+
+        .form-group-sm {
+            margin-bottom: 15px;
+        }
+
+        .form-group-sm label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--texto-gris);
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .form-group-sm input, .form-group-sm select {
+            width: 100%;
+            background-color: var(--gris-input);
+            border: 1px solid var(--gris-borde);
+            color: var(--texto-blanco);
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .btn-red {
             width: 100%;
             background-color: var(--rojo-racing);
             color: white;
-            padding: 16px;
             border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
+            padding: 14px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 13px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            transition: transform 0.2s, background-color 0.2s;
+            cursor: pointer;
+            letter-spacing: 1px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
         }
 
-        .btn-whatsapp:hover {
-            background-color: #c81e1b;
-            transform: translateY(-2px);
+        .btn-red:hover {
+            background-color: #C81B18;
         }
 
-        .grid-store {
+        /* SECCIÓN SERVICIOS Y MOTO */
+        .main-section {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 40px;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: 1fr 320px;
+            gap: 30px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 25px;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
             gap: 15px;
         }
 
-        .product-card {
-            background-color: #1E2125;
-            border-radius: 12px;
-            padding: 15px;
+        .service-card {
+            background-color: var(--gris-card);
+            border: 1px solid var(--gris-borde);
+            border-radius: 10px;
+            padding: 20px 15px;
             text-align: center;
-            border: 1px solid var(--gris-linea);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            align-items: center;
         }
 
-        .product-card h3 {
-            font-size: 15px;
-            margin: 10px 0 5px;
-            font-weight: 600;
-        }
-
-        .product-card .price {
+        .service-card i {
+            font-size: 28px;
             color: var(--rojo-racing);
-            font-weight: 800;
-            font-size: 18px;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
         }
 
-        .btn-small {
-            background-color: var(--gris-tarjeta);
-            color: var(--texto-blanco);
-            border: 1px solid var(--gris-linea);
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            text-decoration: none;
-            display: block;
+        .service-card h4 {
+            font-size: 14px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .service-card p {
+            font-size: 11px;
+            color: var(--texto-gris);
+            margin-bottom: 15px;
+        }
+
+        .btn-outline {
+            border: 1px solid var(--rojo-racing);
+            color: var(--rojo-racing);
+            background: transparent;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            cursor: pointer;
+            width: 100%;
             transition: all 0.2s;
         }
 
-        .btn-small:hover {
+        .btn-outline:hover, .btn-outline.selected {
             background-color: var(--rojo-racing);
-            border-color: var(--rojo-racing);
+            color: white;
         }
 
-        footer {
-            text-align: center;
-            padding: 30px 20px;
-            background-color: #15171A;
+        /* CARD TU MOTO */
+        .moto-selector-card {
+            background-color: var(--gris-card);
+            border: 1px solid var(--gris-borde);
+            border-radius: 12px;
+            padding: 25px;
+            height: fit-content;
+        }
+
+        .moto-selector-card h3 {
+            font-size: 16px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .moto-selector-card p {
+            font-size: 11px;
             color: var(--texto-gris);
+            margin-bottom: 20px;
+        }
+
+        /* FOOTER / BENEFICIOS */
+        .benefits-bar {
+            background-color: #08090B;
+            border-top: 1px solid var(--gris-borde);
+            padding: 25px 40px;
+            margin-top: 50px;
+        }
+
+        .benefits-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .benefit-item i {
+            font-size: 24px;
+            color: var(--rojo-racing);
+        }
+
+        .benefit-info h5 {
             font-size: 12px;
-            border-top: 1px solid var(--gris-linea);
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .benefit-info p {
+            font-size: 11px;
+            color: var(--texto-gris);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .hero { flex-direction: column; gap: 30px; text-align: center; }
+            .main-section { grid-template-columns: 1fr; }
+            .services-grid { grid-template-columns: repeat(2, 1fr); }
+            .benefits-grid { grid-template-columns: repeat(2, 1fr); }
+            header { flex-direction: column; gap: 15px; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <img src="taller moto marco.jpeg" alt="MAS RACING Logo" class="logo-img">
-        <div class="subtitle">MOTOMECANICA</div>
+        <div class="logo-area">
+            <img src="taller moto marco.jpeg" alt="MAS RACING" class="logo-img">
+        </div>
+        <nav>
+            <a href="#inicio" class="active">Inicio</a>
+            <a href="#servicios">Servicios</a>
+            <a href="#turnos">Turnos</a>
+            <a href="#contacto">Contacto</a>
+        </nav>
+        <div class="sponsors">
+            <span class="sponsor-text monster"><i class="fa-solid fa-claw-marks"></i> MONSTER</span>
+            <span class="sponsor-text redbull">Red Bull RACING</span>
+        </div>
     </header>
 
-    <nav>
-        <a href="#turnos" class="active">Turnos</a>
-        <a href="#tienda">Repuestos</a>
-        <a href="#contacto">Taller</a>
-    </nav>
-
-    <div class="container">
-
-        <div id="turnos" class="card">
-            <h2>RESERVA TU TURNO</h2>
-            <form id="turnoForm">
-                <div class="form-group">
-                    <label>Nombre y Apellido</label>
-                    <input type="text" id="nombre" placeholder="Ej: Juan Pérez" required>
+    <section class="hero" id="inicio">
+        <div class="hero-text">
+            <h1 class="hero-title">TU MOTO <span>EN LAS MEJORES MANOS</span></h1>
+            <p class="hero-subtitle">Servicio profesional para que disfrutes al máximo tu moto.</p>
+            
+            <div class="features-inline">
+                <div class="feature-item">
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
+                    <span>Mecánicos Especializados</span>
                 </div>
-
-                <div class="form-group">
-                    <label>Marca y Modelo de la Moto</label>
-                    <input type="text" id="moto" placeholder="Ej: Honda XR 150" required>
+                <div class="feature-item">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>Repuestos de Calidad</span>
                 </div>
-
-                <div class="form-group">
-                    <label>Cilindrada</label>
-                    <select id="cilindrada" onchange="calcularPrecio()">
-                        <option value="110">Hasta 110cc</option>
-                        <option value="150" selected>125cc a 200cc</option>
-                        <option value="250">250cc o superior</option>
-                    </select>
+                <div class="feature-item">
+                    <i class="fa-solid fa-microchip"></i>
+                    <span>Tecnología y Diagnóstico</span>
                 </div>
+            </div>
+        </div>
 
-                <div class="form-group">
-                    <label>Insumos / Materiales</label>
-                    <select id="modalidad" onchange="calcularPrecio()">
-                        <option value="taller">Mecánico provee insumos (Service Completo)</option>
-                        <option value="cliente">Cliente trae sus insumos (Solo Mano de Obra)</option>
-                    </select>
+        <div class="turno-card" id="turnos">
+            <h3>SOLICITÁ TU TURNO</h3>
+            <p>Elegí fecha y horario</p>
+
+            <form id="quickTurno">
+                <div class="form-group-sm">
+                    <label><i class="fa-regular fa-user"></i> Tu Nombre</label>
+                    <input type="text" id="clienteNombre" placeholder="Ej: Juan Pérez" required>
                 </div>
-
-                <div class="form-group">
-                    <label>Fecha</label>
-                    <input type="date" id="fecha" required>
+                <div class="form-group-sm">
+                    <label><i class="fa-regular fa-calendar"></i> Fecha</label>
+                    <input type="date" id="turnoFecha" required>
                 </div>
-
-                <div class="form-group">
-                    <label>Horario Disponible</label>
-                    <select id="hora" required>
+                <div class="form-group-sm">
+                    <label><i class="fa-regular fa-clock"></i> Horario</label>
+                    <select id="turnoHora" required>
                         <option value="09:00 HS">09:00 HS</option>
                         <option value="11:00 HS">11:00 HS</option>
                         <option value="15:00 HS">15:00 HS</option>
                         <option value="17:00 HS">17:00 HS</option>
                     </select>
                 </div>
-
-                <div class="price-card">
-                    <div class="label">Precio estimado del trabajo</div>
-                    <div class="amount" id="precioEstimado">$ 25.000</div>
-                    <span style="font-size: 11px; color: var(--texto-gris);">Sujeto a verificación presencial del vehículo</span>
-                </div>
-
-                <button type="button" class="btn-whatsapp" onclick="enviarWhatsApp()">
-                    Confirmar Turno por WhatsApp
+                <button type="button" class="btn-red" onclick="solicitarTurnoDirecto()">
+                    <i class="fa-regular fa-calendar-check"></i> RESERVAR TURNO
                 </button>
             </form>
         </div>
+    </section>
 
-        <div id="tienda" class="card">
-            <h2>REPUESTOS Y ELEMENTOS</h2>
-            <div class="grid-store">
-                <div class="product-card">
-                    <h3>Aceite Sintético 1L</h3>
-                    <div class="price">$ 12.500</div>
-                    <a href="https://wa.me/5493425688013?text=Hola!%20Consulto%20stock%20de%20Aceite%20Sintetico" class="btn-small">Consultar Stock</a>
+    <section class="main-section" id="servicios">
+        <div>
+            <h2 class="section-title">¿QUÉ SERVICIO NECESITÁS?</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <i class="fa-solid fa-wrench"></i>
+                    <h4>SERVICE</h4>
+                    <p>Cambio de aceite, filtros, bujías, puesta a punto y mucho más.</p>
+                    <button class="btn-outline" onclick="seleccionarServicio(this, 'Service Completo')">SELECCIONAR</button>
                 </div>
-                <div class="product-card">
-                    <h3>Kit Transmisión</h3>
-                    <div class="price">$ 28.000</div>
-                    <a href="https://wa.me/5493425688013?text=Hola!%20Consulto%20stock%20de%20Kit%20Transmision" class="btn-small">Consultar Stock</a>
+                <div class="service-card">
+                    <i class="fa-solid fa-circle-dot"></i>
+                    <h4>FRENOS</h4>
+                    <p>Revisión, reparación y mantenimiento de todo el sistema de frenos.</p>
+                    <button class="btn-outline" onclick="seleccionarServicio(this, 'Frenos')">SELECCIONAR</button>
                 </div>
-                <div class="product-card">
-                    <h3>Filtro de Aire</h3>
-                    <div class="price">$ 8.500</div>
-                    <a href="https://wa.me/5493425688013?text=Hola!%20Consulto%20stock%20de%20Filtro%20de%20Aire" class="btn-small">Consultar Stock</a>
+                <div class="service-card">
+                    <i class="fa-solid fa-link"></i>
+                    <h4>TRANSMISIÓN</h4>
+                    <p>Chequeo y mantenimiento de cadena, corona, piñón y kit completo.</p>
+                    <button class="btn-outline" onclick="seleccionarServicio(this, 'Transmisión')">SELECCIONAR</button>
+                </div>
+                <div class="service-card">
+                    <i class="fa-solid fa-arrows-up-down"></i>
+                    <h4>AMORTIGUACIÓN</h4>
+                    <p>Revisión y servicio de suspensión delantera y trasera.</p>
+                    <button class="btn-outline" onclick="seleccionarServicio(this, 'Amortiguación')">SELECCIONAR</button>
+                </div>
+                <div class="service-card">
+                    <i class="fa-solid fa-clipboard-check"></i>
+                    <h4>DIAGNÓSTICO</h4>
+                    <p>Escaneo electrónico, fallas, testeo completo de tu moto.</p>
+                    <button class="btn-outline" onclick="seleccionarServicio(this, 'Diagnóstico')">SELECCIONAR</button>
                 </div>
             </div>
         </div>
 
-        <div id="contacto" class="card">
-            <h2>UBICACIÓN DEL TALLER</h2>
-            <p style="font-size: 14px; color: var(--texto-gris); margin-bottom: 5px;"><strong>Teléfono / WhatsApp:</strong> 342 568-8013</p>
-            <p style="font-size: 14px; color: var(--texto-gris);"><strong>Horarios:</strong> Lunes a Viernes de 08:00 a 18:00 hs</p>
+        <div class="moto-selector-card">
+            <h3>TU MOTO</h3>
+            <p>Seleccioná tu moto para brindarte un mejor servicio</p>
+
+            <div class="form-group-sm">
+                <label>MARCA</label>
+                <select id="motoMarca">
+                    <option value="Honda">Honda</option>
+                    <option value="Yamaha">Yamaha</option>
+                    <option value="Motomel">Motomel</option>
+                    <option value="Corven">Corven</option>
+                    <option value="Zanella">Zanella</option>
+                    <option value="Otra">Otra Marca</option>
+                </select>
+            </div>
+            <div class="form-group-sm">
+                <label>MODELO Y CILINDRADA</label>
+                <input type="text" id="motoModelo" placeholder="Ej: XR 150L" required>
+            </div>
+            <div class="form-group-sm">
+                <label>AÑO</label>
+                <input type="number" id="motoAno" placeholder="Ej: 2022" min="1990" max="2026">
+            </div>
+
+            <button type="button" class="btn-red" onclick="solicitarTurnoDirecto()">
+                CONTINUAR <i class="fa-solid fa-arrow-right"></i>
+            </button>
         </div>
+    </section>
 
+    <div class="benefits-bar" id="contacto">
+        <div class="benefits-grid">
+            <div class="benefit-item">
+                <i class="fa-solid fa-headset"></i>
+                <div class="benefit-info">
+                    <h5>ATENCIÓN PERSONALIZADA</h5>
+                    <p>Asesoramiento a medida</p>
+                </div>
+            </div>
+            <div class="benefit-item">
+                <i class="fa-solid fa-shield"></i>
+                <div class="benefit-info">
+                    <h5>GARANTÍA DE SERVICIO</h5>
+                    <p>Calidad y respaldo</p>
+                </div>
+            </div>
+            <div class="benefit-item">
+                <i class="fa-solid fa-stopwatch"></i>
+                <div class="benefit-info">
+                    <h5>RAPIDEZ Y EFICIENCIA</h5>
+                    <p>Tu tiempo nos importa</p>
+                </div>
+            </div>
+            <div class="benefit-item">
+                <i class="fa-solid fa-heart"></i>
+                <div class="benefit-info">
+                    <h5>PASIÓN POR LAS MOTOS</h5>
+                    <p>Somos motociclistas</p>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <footer>
-        Sitio web diseñado para MAS RACING Motomecánica
-    </footer>
 
     <script>
         const NUMERO_WHATSAPP = "5493425688013";
+        let servicioSeleccionado = "General / Service";
 
-        const precios = {
-            "110": { taller: 18000, cliente: 10000 },
-            "150": { taller: 25000, cliente: 14000 },
-            "250": { taller: 35000, cliente: 20000 }
-        };
-
-        function calcularPrecio() {
-            const cc = document.getElementById("cilindrada").value;
-            const modalidad = document.getElementById("modalidad").value;
-            const precio = precios[cc][modalidad];
-            document.getElementById("precioEstimado").innerText = "$ " + precio.toLocaleString("es-AR");
+        function seleccionarServicio(btn, servicio) {
+            document.querySelectorAll('.btn-outline').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            servicioSeleccionado = servicio;
         }
 
-        function enviarWhatsApp() {
-            const nombre = document.getElementById("nombre").value;
-            const moto = document.getElementById("moto").value;
-            const fecha = document.getElementById("fecha").value;
-            const hora = document.getElementById("hora").value;
-            const cc = document.getElementById("cilindrada").selectedOptions[0].text;
-            const modalidad = document.getElementById("modalidad").selectedOptions[0].text;
-            const precio = document.getElementById("precioEstimado").innerText;
+        function solicitarTurnoDirecto() {
+            const nombre = document.getElementById("clienteNombre").value || "Cliente";
+            const fecha = document.getElementById("turnoFecha").value;
+            const hora = document.getElementById("turnoHora").value;
+            const marca = document.getElementById("motoMarca").value;
+            const modelo = document.getElementById("motoModelo").value || "No especificado";
+            const ano = document.getElementById("motoAno").value || "S/D";
 
-            if (!nombre || !moto || !fecha) {
-                alert("Por favor completa tu nombre, modelo de moto y fecha.");
+            if (!fecha) {
+                alert("Por favor elegí una fecha para tu turno.");
                 return;
             }
 
             const mensaje = `Hola *MAS RACING*! Quisiera agendar un turno:%0A%0A` +
                             `👤 *Cliente:* ${nombre}%0A` +
-                            `🏍️ *Moto:* ${moto} (${cc})%0A` +
-                            `🛠️ *Modalidad:* ${modalidad}%0A` +
+                            `🏍️ *Moto:* ${marca} ${modelo} (${ano})%0A` +
+                            `🛠️ *Servicio:* ${servicioSeleccionado}%0A` +
                             `📅 *Fecha:* ${fecha}%0A` +
-                            `⏰ *Hora:* ${hora}%0A` +
-                            `💰 *Precio Estimado:* ${precio}%0A%0A` +
+                            `⏰ *Hora:* ${hora}%0A%0A` +
                             `¿Tienen disponibilidad para confirmar?`;
 
             window.open(`https://wa.me/${NUMERO_WHATSAPP}?text=${mensaje}`, '_blank');
         }
 
-        document.getElementById('fecha').min = new Date().toISOString().split("T")[0];
+        document.getElementById('turnoFecha').min = new Date().toISOString().split("T")[0];
     </script>
 </body>
 </html>
