@@ -458,11 +458,12 @@
         <div class="card-container" id="turnos">
             <div class="turno-card-unified">
                 
-                <!-- PESTAÑAS DE NAVEGACIÓN (ORDENADAS: 1. REGISTRO, 2. PEDIR TURNO, 3. MIS TURNOS) -->
+                <!-- PESTAÑAS DE NAVEGACIÓN (ORDENADAS: 1. REGISTRO, 2. PEDIR TURNO, 3. MIS TURNOS, 4. MI PERFIL) -->
                 <div class="tabs-header">
                     <button class="tab-btn active" id="btn-tab-registro" onclick="switchTab('tab-registro')"><i class="fa-solid fa-id-card"></i> 1. Registro</button>
                     <button class="tab-btn" id="btn-tab-turno" onclick="switchTab('tab-turno')"><i class="fa-regular fa-calendar-plus"></i> 2. Pedir Turno</button>
                     <button class="tab-btn" id="btn-tab-cancelar" onclick="switchTab('tab-cancelar')"><i class="fa-regular fa-calendar-xmark"></i> 3. Mis Turnos</button>
+                    <button class="tab-btn" id="btn-tab-perfil" onclick="switchTab('tab-perfil')"><i class="fa-solid fa-motorcycle"></i> 4. Mi Perfil</button>
                 </div>
 
                 <!-- PESTAÑA 1: REGISTRO / MI PERFIL (PRIMERA) -->
@@ -544,6 +545,11 @@
                                 </select>
                             </div>
 
+                            <div class="form-group-sm">
+                                <label><i class="fa-solid fa-gauge-high"></i> KILOMETRAJE ACTUAL</label>
+                                <input type="number" id="motoKm" placeholder="Ej: 12500" min="0">
+                            </div>
+
                             <div class="form-group-sm full">
                                 <label><i class="fa-solid fa-box-open"></i> PROVISIÓN DE REPUESTOS</label>
                                 <select id="repuestosModo">
@@ -571,6 +577,22 @@
                     <div class="my-turnos-list" id="listaMisTurnos">
                         <!-- Se llena vía JavaScript -->
                     </div>
+                </div>
+
+                <!-- PESTAÑA 4: MI PERFIL / HISTORIAL DE LA MOTO (CUARTA) -->
+                <div id="tab-perfil" class="tab-content">
+                    <h4 style="font-size:14px; margin-bottom:8px;">HISTORIAL DE TU MOTO</h4>
+                    <p style="font-size:11px; color:var(--texto-gris); margin-bottom:15px;">Ingresá tu DNI para ver cada trabajo que le hicimos a tu moto y cuándo te conviene el próximo service.</p>
+
+                    <div class="form-group-sm">
+                        <label>DNI</label>
+                        <input type="number" id="perfilDni" placeholder="Tu DNI">
+                    </div>
+                    <button type="button" class="btn-red" onclick="verPerfilCompleto()">
+                        <i class="fa-solid fa-clock-rotate-left"></i> VER MI HISTORIAL
+                    </button>
+
+                    <div id="perfilResultado" style="margin-top:15px;"></div>
                 </div>
 
             </div>
@@ -659,6 +681,7 @@
     <script>
         const NUMERO_WHATSAPP = "5493425688013";
         const HORARIOS_DISPONIBLES = ["09:00 HS", "11:00 HS", "15:00 HS", "17:00 HS"];
+        const INTERVALO_SERVICE_KM = 2000; // cada cuántos km sugerimos el próximo service
         
         let servicioSeleccionado = null;
         let clientesBD = JSON.parse(localStorage.getItem('masracing_clientes')) || {};
@@ -785,6 +808,7 @@
             const hora = document.getElementById('turnoHora').value;
             const marca = document.getElementById('motoMarca').value;
             const modelo = document.getElementById('motoModelo').value || "No especificado";
+            const km = document.getElementById('motoKm').value.trim();
             const repuestos = document.getElementById('repuestosModo').value;
 
             if (!servicioSeleccionado) {
@@ -835,7 +859,8 @@
                 fecha: fecha,
                 hora: hora,
                 servicio: servicioSeleccionado,
-                moto: `${marca} ${modelo}`
+                moto: `${marca} ${modelo}`,
+                km: km || null
             });
             clientesBD[dni].trabajosRealizados += 1;
 
@@ -846,7 +871,7 @@
             // Notificación e integración con WhatsApp
             const mensaje = `Hola *MAS RACING*! Confirmación de Turno Reservado:%0A%0A` +
                             `👤 *Cliente:* ${clientesBD[dni].nombre} (DNI: ${dni})%0A` +
-                            `🏍️ *Moto:* ${marca} ${modelo}%0A` +
+                            `🏍️ *Moto:* ${marca} ${modelo}${km ? ' (' + km + ' km)' : ''}%0A` +
                             `🛠️ *Servicio:* ${servicioSeleccionado}%0A` +
                             `📦 *Repuestos:* ${repuestos}%0A` +
                             `📅 *Fecha:* ${fecha}%0A` +
@@ -914,6 +939,79 @@
                 buscarTurnosCliente();
                 actualizarHorariosDisponibles();
             }
+        }
+
+        // MI PERFIL: HISTORIAL COMPLETO DE LA MOTO + PRÓXIMO SERVICE SUGERIDO
+        function verPerfilCompleto() {
+            const dni = document.getElementById('perfilDni').value.trim();
+            const contenedor = document.getElementById('perfilResultado');
+            contenedor.innerHTML = "";
+
+            if (!dni) {
+                alert("Ingresá tu DNI para ver tu historial.");
+                return;
+            }
+
+            if (!clientesBD[dni]) {
+                contenedor.innerHTML = "<p style='font-size:12px; color:var(--texto-gris); margin-top:10px;'>No encontramos ese DNI. Registrate primero en la pestaña '1. Registro'.</p>";
+                return;
+            }
+
+            const cliente = clientesBD[dni];
+            const historial = (cliente.historialServicios || []).slice(); // copia, sin modificar el original
+
+            // Encabezado con datos del cliente
+            let html = `
+                <div class="profile-badge">
+                    <p><strong>${cliente.nombre}</strong> (DNI: ${dni})</p>
+                    <p>Total de trabajos realizados: <strong>${cliente.trabajosRealizados}</strong></p>
+                    ${cliente.trabajosRealizados >= 3 ? '<div class="discount-tag">¡Tenés 10% de Descuento por Cliente Frecuente!</div>' : ''}
+                </div>
+            `;
+
+            // Próximo service sugerido, en base al último km registrado
+            const historialConKm = historial.filter(h => h.km);
+            if (historialConKm.length > 0) {
+                const ultimo = historialConKm[historialConKm.length - 1];
+                const proximoKm = parseInt(ultimo.km) + INTERVALO_SERVICE_KM;
+                html += `
+                    <div class="profile-badge" style="border-color: var(--verde-exito);">
+                        <p style="font-size:10px; color:var(--texto-gris);">PRÓXIMO SERVICE SUGERIDO</p>
+                        <p><strong style="color: var(--verde-exito);">Alrededor de los ${proximoKm.toLocaleString('es-AR')} km</strong></p>
+                        <p style="font-size:10px; color:var(--texto-gris); margin-top:4px;">
+                            (Último registro: ${ultimo.servicio} a los ${parseInt(ultimo.km).toLocaleString('es-AR')} km, el ${ultimo.fecha}. Estimado cada ${INTERVALO_SERVICE_KM} km, puede variar según el trabajo realizado.)
+                        </p>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="profile-badge" style="border-color: var(--gris-borde);">
+                        <p style="font-size:11px; color:var(--texto-gris);">Todavía no registramos el kilometraje de tu moto. La próxima vez que pidas un turno, contanos los km para poder avisarte cuándo te toca el próximo service.</p>
+                    </div>
+                `;
+            }
+
+            // Historial completo, del más reciente al más viejo
+            html += `<h4 style="font-size:13px; margin:15px 0 8px;">REGISTRO DE TRABAJOS</h4>`;
+
+            if (historial.length === 0) {
+                html += `<p style="font-size:12px; color:var(--texto-gris);">Todavía no tenés trabajos registrados.</p>`;
+            } else {
+                html += `<div class="my-turnos-list" style="max-height: 250px;">`;
+                historial.slice().reverse().forEach(h => {
+                    html += `
+                        <div class="turno-item" style="align-items:flex-start;">
+                            <div>
+                                <strong>${h.fecha}</strong> — ${h.servicio}<br>
+                                <span style="color:var(--texto-gris);">${h.moto}${h.km ? ' · ' + parseInt(h.km).toLocaleString('es-AR') + ' km' : ''}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            }
+
+            contenedor.innerHTML = html;
         }
 
         // Inicialización
