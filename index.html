@@ -95,12 +95,12 @@
             transform: scale(1.08);
         }
 
-        /* HERO SECTION CON NUEVA MOTO FACHERA */
+        /* HERO SECTION */
         .hero {
             position: relative;
             background: linear-gradient(90deg, rgba(10,11,13,0.92) 30%, rgba(10,11,13,0.65) 60%, rgba(10,11,13,0.9) 100%), 
                         url('https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=1920&auto=format&fit=crop') center/cover no-repeat;
-            min-height: 520px;
+            min-height: 580px;
             padding: 50px 40px;
             display: flex;
             justify-content: space-between;
@@ -110,11 +110,11 @@
         }
 
         .hero-text {
-            max-width: 550px;
+            max-width: 500px;
         }
 
         .hero-title {
-            font-size: 52px;
+            font-size: 50px;
             font-weight: 900;
             font-style: italic;
             line-height: 1.1;
@@ -153,31 +153,42 @@
             font-size: 18px;
         }
 
-        /* CARD FLOTANTE TURNO */
-        .turno-card {
+        /* CARD UNIFICADA: TURNO + TU MOTO */
+        .turno-card-unified {
             background-color: var(--gris-card);
             border: 1px solid var(--gris-borde);
             border-radius: 12px;
             padding: 25px;
-            width: 320px;
+            width: 440px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
 
-        .turno-card h3 {
+        .turno-card-unified h3 {
             font-size: 18px;
             font-weight: 800;
             text-transform: uppercase;
             margin-bottom: 5px;
+            color: var(--texto-blanco);
         }
 
-        .turno-card p {
+        .turno-card-unified p.sub {
             font-size: 12px;
             color: var(--texto-gris);
             margin-bottom: 20px;
         }
 
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
         .form-group-sm {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
+        }
+
+        .form-group-sm.full {
+            grid-column: span 2;
         }
 
         .form-group-sm label {
@@ -194,9 +205,9 @@
             background-color: var(--gris-input);
             border: 1px solid var(--gris-borde);
             color: var(--texto-blanco);
-            padding: 10px 12px;
+            padding: 9px 12px;
             border-radius: 6px;
-            font-size: 13px;
+            font-size: 12px;
         }
 
         .btn-red {
@@ -216,21 +227,18 @@
             align-items: center;
             gap: 8px;
             transition: background 0.2s;
-            text-decoration: none;
+            margin-top: 10px;
         }
 
         .btn-red:hover {
             background-color: #C81B18;
         }
 
-        /* SECCIÓN SERVICIOS Y MOTO */
+        /* SECCIÓN SERVICIOS */
         .main-section {
             max-width: 1400px;
             margin: 40px auto;
             padding: 0 40px;
-            display: grid;
-            grid-template-columns: 1fr 320px;
-            gap: 30px;
         }
 
         .section-title {
@@ -297,28 +305,6 @@
             color: white;
         }
 
-        /* CARD TU MOTO */
-        .moto-selector-card {
-            background-color: var(--gris-card);
-            border: 1px solid var(--gris-borde);
-            border-radius: 12px;
-            padding: 25px;
-            height: fit-content;
-        }
-
-        .moto-selector-card h3 {
-            font-size: 16px;
-            font-weight: 800;
-            text-transform: uppercase;
-            margin-bottom: 5px;
-        }
-
-        .moto-selector-card p {
-            font-size: 11px;
-            color: var(--texto-gris);
-            margin-bottom: 20px;
-        }
-
         /* FOOTER / BENEFICIOS & UBICACIÓN */
         .benefits-bar {
             background-color: #08090B;
@@ -362,15 +348,15 @@
             background-color: #1A1D22;
             border: 1px solid var(--rojo-racing);
             color: var(--texto-blanco);
-            padding: 10px 14px;
+            padding: 8px 12px;
             border-radius: 6px;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 700;
             text-transform: uppercase;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             transition: background 0.2s;
             margin-top: 5px;
         }
@@ -382,7 +368,7 @@
         /* RESPONSIVE */
         @media (max-width: 1024px) {
             .hero { flex-direction: column; gap: 30px; text-align: center; }
-            .main-section { grid-template-columns: 1fr; }
+            .turno-card-unified { width: 100%; max-width: 480px; }
             .services-grid { grid-template-columns: repeat(2, 1fr); }
             .benefits-grid { grid-template-columns: repeat(2, 1fr); }
             header { flex-direction: column; gap: 15px; }
@@ -436,99 +422,98 @@
             </div>
         </div>
 
-        <div class="turno-card" id="turnos">
-            <h3>SOLICITÁ TU TURNO</h3>
-            <p>Elegí fecha y horario</p>
+        <div class="turno-card-unified" id="turnos">
+            <h3>RESERVÁ TU TURNO</h3>
+            <p class="sub">Ingresá los datos de tu moto y agendá tu visita</p>
 
             <form id="quickTurno">
-                <div class="form-group-sm">
-                    <label><i class="fa-regular fa-user"></i> Tu Nombre</label>
-                    <input type="text" id="clienteNombre" placeholder="Ej: Juan Pérez" required>
+                <div class="form-grid-2">
+                    <div class="form-group-sm full">
+                        <label><i class="fa-regular fa-user"></i> Tu Nombre</label>
+                        <input type="text" id="clienteNombre" placeholder="Ej: Juan Pérez" required>
+                    </div>
+
+                    <div class="form-group-sm">
+                        <label>MARCA</label>
+                        <select id="motoMarca">
+                            <option value="Honda">Honda</option>
+                            <option value="Yamaha">Yamaha</option>
+                            <option value="Motomel">Motomel</option>
+                            <option value="Corven">Corven</option>
+                            <option value="Zanella">Zanella</option>
+                            <option value="Otra">Otra Marca</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group-sm">
+                        <label>MODELO / CILINDRADA</label>
+                        <input type="text" id="motoModelo" placeholder="Ej: XR 150L" required>
+                    </div>
+
+                    <div class="form-group-sm">
+                        <label><i class="fa-regular fa-calendar"></i> FECHA</label>
+                        <input type="date" id="turnoFecha" required>
+                    </div>
+
+                    <div class="form-group-sm">
+                        <label><i class="fa-regular fa-clock"></i> HORARIO</label>
+                        <select id="turnoHora" required>
+                            <option value="09:00 HS">09:00 HS</option>
+                            <option value="11:00 HS">11:00 HS</option>
+                            <option value="15:00 HS">15:00 HS</option>
+                            <option value="17:00 HS">17:00 HS</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group-sm full">
+                        <label><i class="fa-solid fa-box-open"></i> PROVISIÓN DE REPUESTOS</label>
+                        <select id="repuestosModo">
+                            <option value="Se encarga el taller (Nosotros los conseguimos)">Se encarga el taller (Nosotros los conseguimos)</option>
+                            <option value="Llevo mis propios repuestos">Llevo mis propios repuestos (Comprados por el cliente)</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="form-group-sm">
-                    <label><i class="fa-regular fa-calendar"></i> Fecha</label>
-                    <input type="date" id="turnoFecha" required>
-                </div>
-                <div class="form-group-sm">
-                    <label><i class="fa-regular fa-clock"></i> Horario</label>
-                    <select id="turnoHora" required>
-                        <option value="09:00 HS">09:00 HS</option>
-                        <option value="11:00 HS">11:00 HS</option>
-                        <option value="15:00 HS">15:00 HS</option>
-                        <option value="17:00 HS">17:00 HS</option>
-                    </select>
-                </div>
+
                 <button type="button" class="btn-red" onclick="solicitarTurnoDirecto()">
-                    <i class="fa-regular fa-calendar-check"></i> RESERVAR TURNO
+                    <i class="fa-regular fa-calendar-check"></i> AGENDAR TURNO POR WHATSAPP
                 </button>
             </form>
         </div>
     </section>
 
     <section class="main-section" id="servicios">
-        <div>
-            <h2 class="section-title">¿QUÉ SERVICIO NECESITÁS?</h2>
-            <div class="services-grid">
-                <div class="service-card">
-                    <i class="fa-solid fa-wrench"></i>
-                    <h4>SERVICE</h4>
-                    <p>Cambio de aceite, filtros, bujías, puesta a punto y mucho más.</p>
-                    <button class="btn-outline" onclick="seleccionarServicio(this, 'Service Completo')">SELECCIONAR</button>
-                </div>
-                <div class="service-card">
-                    <i class="fa-solid fa-circle-dot"></i>
-                    <h4>FRENOS</h4>
-                    <p>Revisión, reparación y mantenimiento de todo el sistema de frenos.</p>
-                    <button class="btn-outline" onclick="seleccionarServicio(this, 'Frenos')">SELECCIONAR</button>
-                </div>
-                <div class="service-card">
-                    <i class="fa-solid fa-link"></i>
-                    <h4>TRANSMISIÓN</h4>
-                    <p>Chequeo y mantenimiento de cadena, corona, piñón y kit completo.</p>
-                    <button class="btn-outline" onclick="seleccionarServicio(this, 'Transmisión')">SELECCIONAR</button>
-                </div>
-                <div class="service-card">
-                    <i class="fa-solid fa-arrows-up-down"></i>
-                    <h4>AMORTIGUACIÓN</h4>
-                    <p>Revisión y servicio de suspensión delantera y trasera.</p>
-                    <button class="btn-outline" onclick="seleccionarServicio(this, 'Amortiguación')">SELECCIONAR</button>
-                </div>
-                <div class="service-card">
-                    <i class="fa-solid fa-clipboard-check"></i>
-                    <h4>DIAGNÓSTICO</h4>
-                    <p>Escaneo electrónico, fallas, testeo completo de tu moto.</p>
-                    <button class="btn-outline" onclick="seleccionarServicio(this, 'Diagnóstico')">SELECCIONAR</button>
-                </div>
+        <h2 class="section-title">ELEGÍ EL SERVICIO QUE NECESITÁS</h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <i class="fa-solid fa-wrench"></i>
+                <h4>SERVICE</h4>
+                <p>Cambio de aceite, filtros, bujías, puesta a punto y más.</p>
+                <button class="btn-outline" onclick="seleccionarServicio(this, 'Service Completo')">SELECCIONAR</button>
             </div>
-        </div>
-
-        <div class="moto-selector-card">
-            <h3>TU MOTO</h3>
-            <p>Seleccioná tu moto para brindarte un mejor servicio</p>
-
-            <div class="form-group-sm">
-                <label>MARCA</label>
-                <select id="motoMarca">
-                    <option value="Honda">Honda</option>
-                    <option value="Yamaha">Yamaha</option>
-                    <option value="Motomel">Motomel</option>
-                    <option value="Corven">Corven</option>
-                    <option value="Zanella">Zanella</option>
-                    <option value="Otra">Otra Marca</option>
-                </select>
+            <div class="service-card">
+                <i class="fa-solid fa-circle-dot"></i>
+                <h4>FRENOS</h4>
+                <p>Revisión, reparación y mantenimiento del sistema de frenos.</p>
+                <button class="btn-outline" onclick="seleccionarServicio(this, 'Frenos')">SELECCIONAR</button>
             </div>
-            <div class="form-group-sm">
-                <label>MODELO Y CILINDRADA</label>
-                <input type="text" id="motoModelo" placeholder="Ej: XR 150L" required>
+            <div class="service-card">
+                <i class="fa-solid fa-link"></i>
+                <h4>TRANSMISIÓN</h4>
+                <p>Mantenimiento de cadena, corona, piñón y kit completo.</p>
+                <button class="btn-outline" onclick="seleccionarServicio(this, 'Transmisión')">SELECCIONAR</button>
             </div>
-            <div class="form-group-sm">
-                <label>AÑO</label>
-                <input type="number" id="motoAno" placeholder="Ej: 2022" min="1990" max="2026">
+            <div class="service-card">
+                <i class="fa-solid fa-arrows-up-down"></i>
+                <h4>AMORTIGUACIÓN</h4>
+                <p>Revisión y servicio de suspensión delantera y trasera.</p>
+                <button class="btn-outline" onclick="seleccionarServicio(this, 'Amortiguación')">SELECCIONAR</button>
             </div>
-
-            <button type="button" class="btn-red" onclick="solicitarTurnoDirecto()">
-                CONTINUAR <i class="fa-solid fa-arrow-right"></i>
-            </button>
+            <div class="service-card">
+                <i class="fa-solid fa-clipboard-check"></i>
+                <h4>DIAGNÓSTICO</h4>
+                <p>Escaneo electrónico, fallas y testeo completo de tu moto.</p>
+                <button class="btn-outline" onclick="seleccionarServicio(this, 'Diagnóstico')">SELECCIONAR</button>
+            </div>
         </div>
     </section>
 
@@ -591,7 +576,7 @@
             const hora = document.getElementById("turnoHora").value;
             const marca = document.getElementById("motoMarca").value;
             const modelo = document.getElementById("motoModelo").value || "No especificado";
-            const ano = document.getElementById("motoAno").value || "S/D";
+            const repuestos = document.getElementById("repuestosModo").value;
 
             if (!fecha) {
                 alert("Por favor elegí una fecha para tu turno.");
@@ -600,8 +585,9 @@
 
             const mensaje = `Hola *MAS RACING*! Quisiera agendar un turno:%0A%0A` +
                             `👤 *Cliente:* ${nombre}%0A` +
-                            `🏍️ *Moto:* ${marca} ${modelo} (${ano})%0A` +
+                            `🏍️ *Moto:* ${marca} ${modelo}%0A` +
                             `🛠️ *Servicio:* ${servicioSeleccionado}%0A` +
+                            `📦 *Repuestos:* ${repuestos}%0A` +
                             `📅 *Fecha:* ${fecha}%0A` +
                             `⏰ *Hora:* ${hora}%0A%0A` +
                             `¿Tienen disponibilidad para confirmar?`;
