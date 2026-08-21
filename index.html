@@ -17,6 +17,7 @@
             --texto-blanco: #FFFFFF;
             --texto-gris: #9EA3AE;
             --verde-exito: #28a745;
+            --instagram-color: #E1306C;
         }
 
         * {
@@ -76,6 +77,31 @@
 
         nav a.active, nav a:hover {
             color: var(--rojo-racing);
+        }
+
+        .nav-social {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-ig {
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            color: white;
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-ig:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(225, 48, 108, 0.4);
         }
 
         /* HERO SECTION */
@@ -144,11 +170,13 @@
             border: none;
             color: var(--texto-gris);
             font-weight: 800;
-            font-size: 12px;
+            font-size: 11px;
             text-transform: uppercase;
             cursor: pointer;
-            padding: 6px 10px;
+            padding: 8px 10px;
             border-radius: 4px;
+            flex: 1;
+            text-align: center;
         }
 
         .tab-btn.active {
@@ -254,7 +282,7 @@
             margin-top: 5px;
         }
 
-        /* SERVICIOS Y FOOTER */
+        /* SECCIÓN SERVICIOS */
         .main-section {
             max-width: 1400px;
             margin: 40px auto;
@@ -333,10 +361,71 @@
             font-size: 11px;
         }
 
+        /* FOOTER / BENEFICIOS & UBICACIÓN */
+        .benefits-bar {
+            background-color: #08090B;
+            border-top: 1px solid var(--gris-borde);
+            padding: 30px 40px;
+            margin-top: 50px;
+        }
+
+        .benefits-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            align-items: center;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .benefit-item i {
+            font-size: 24px;
+            color: var(--rojo-racing);
+        }
+
+        .benefit-info h5 {
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .benefit-info p {
+            font-size: 11px;
+            color: var(--texto-gris);
+        }
+
+        .btn-maps {
+            background-color: #1A1D22;
+            border: 1px solid var(--rojo-racing);
+            color: var(--texto-blanco);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+            margin-top: 5px;
+        }
+
+        .btn-maps:hover {
+            background-color: var(--rojo-racing);
+        }
+
         @media (max-width: 1024px) {
             .hero { flex-direction: column; text-align: center; }
             .card-container { width: 100%; }
             .services-grid { grid-template-columns: repeat(2, 1fr); }
+            .benefits-grid { grid-template-columns: repeat(2, 1fr); }
             header { flex-direction: column; gap: 15px; }
         }
     </style>
@@ -349,8 +438,15 @@
         <nav>
             <a href="#inicio">Inicio</a>
             <a href="#servicios">Servicios</a>
-            <a href="#turnos">Agendar Turno</a>
+            <a href="#turnos">Turnos y Registro</a>
+            <a href="#contacto">Ubicación</a>
         </nav>
+
+        <div class="nav-social">
+            <a href="https://www.instagram.com/masracingmotomecanica" target="_blank" class="btn-ig">
+                <i class="fa-brands fa-instagram"></i> Instagram
+            </a>
+        </div>
     </header>
 
     <section class="hero" id="inicio">
@@ -362,19 +458,48 @@
         <div class="card-container" id="turnos">
             <div class="turno-card-unified">
                 
-                <!-- PESTAÑAS DE NAVEGACIÓN -->
+                <!-- PESTAÑAS DE NAVEGACIÓN (ORDENADAS: 1. REGISTRO, 2. PEDIR TURNO, 3. MIS TURNOS) -->
                 <div class="tabs-header">
-                    <button class="tab-btn active" onclick="switchTab('tab-turno')"><i class="fa-regular fa-calendar-plus"></i> Turno</button>
-                    <button class="tab-btn" onclick="switchTab('tab-registro')"><i class="fa-solid fa-id-card"></i> Registro / DNI</button>
-                    <button class="tab-btn" onclick="switchTab('tab-cancelar')"><i class="fa-regular fa-calendar-xmark"></i> Mis Turnos</button>
+                    <button class="tab-btn active" id="btn-tab-registro" onclick="switchTab('tab-registro')"><i class="fa-solid fa-id-card"></i> 1. Registro</button>
+                    <button class="tab-btn" id="btn-tab-turno" onclick="switchTab('tab-turno')"><i class="fa-regular fa-calendar-plus"></i> 2. Pedir Turno</button>
+                    <button class="tab-btn" id="btn-tab-cancelar" onclick="switchTab('tab-cancelar')"><i class="fa-regular fa-calendar-xmark"></i> 3. Mis Turnos</button>
                 </div>
 
-                <!-- PESTAÑA 1: SOLICITAR TURNO -->
-                <div id="tab-turno" class="tab-content active">
+                <!-- PESTAÑA 1: REGISTRO / MI PERFIL (PRIMERA) -->
+                <div id="tab-registro" class="tab-content active">
+                    <h4 style="font-size:14px; margin-bottom:8px;">REGISTRATE Y OBTENÉ DESCUENTOS</h4>
+                    <p style="font-size:11px; color:var(--texto-gris); margin-bottom:15px;">Creá tu ficha de cliente para registrar los services de tu moto y acceder a beneficios.</p>
+                    
+                    <form id="formRegistro">
+                        <div class="form-group-sm">
+                            <label>DNI</label>
+                            <input type="number" id="regDni" placeholder="Tu número de DNI" required>
+                        </div>
+                        <div class="form-group-sm">
+                            <label>Nombre y Apellido</label>
+                            <input type="text" id="regNombre" placeholder="Ej: Juan Pérez" required>
+                        </div>
+                        <div class="form-group-sm">
+                            <label>Teléfono (WhatsApp)</label>
+                            <input type="tel" id="regTelefono" placeholder="Ej: 3425688013" required>
+                        </div>
+                        <div class="form-group-sm">
+                            <label>Correo Electrónico</label>
+                            <input type="email" id="regEmail" placeholder="ejemplo@email.com" required>
+                        </div>
+                        
+                        <button type="button" class="btn-red" onclick="registrarCliente()">
+                            <i class="fa-solid fa-user-plus"></i> REGISTRARME COMO CLIENTE
+                        </button>
+                    </form>
+                </div>
+
+                <!-- PESTAÑA 2: SOLICITAR TURNO (SEGUNDA) -->
+                <div id="tab-turno" class="tab-content">
                     <div id="clienteBox" class="profile-badge" style="display:none;">
                         <p><strong id="badgeNombre">Juan Pérez</strong> (DNI: <span id="badgeDni"></span>)</p>
                         <p>Trabajos realizados: <strong id="badgeTrabajos">0</strong></p>
-                        <div id="badgeDescuento" class="discount-tag" style="display:none;">¡Tenes 10% de Descuento por Cliente Frecuente!</div>
+                        <div id="badgeDescuento" class="discount-tag" style="display:none;">¡Tenés 10% de Descuento por Cliente Frecuente!</div>
                     </div>
 
                     <form id="formTurno">
@@ -414,7 +539,7 @@
                             </div>
 
                             <div class="form-group-sm full">
-                                <label><i class="fa-solid fa-box-open"></i> REPUESTOS</label>
+                                <label><i class="fa-solid fa-box-open"></i> PROVISIÓN DE REPUESTOS</label>
                                 <select id="repuestosModo">
                                     <option value="Se encarga el taller (Nosotros los conseguimos)">Se encarga el taller (Nosotros los conseguimos)</option>
                                     <option value="Llevo mis propios repuestos">Llevo mis propios repuestos (Comprados por el cliente)</option>
@@ -428,36 +553,7 @@
                     </form>
                 </div>
 
-                <!-- PESTAÑA 2: REGISTRO / MI PERFIL -->
-                <div id="tab-registro" class="tab-content">
-                    <h4 style="font-size:14px; margin-bottom:10px;">REGISTRATE PARA OBTENER DESCUENTOS</h4>
-                    <p style="font-size:11px; color:var(--texto-gris); margin-bottom:15px;">Guardamos el historial de services realizados en tu moto para otorgarte beneficios.</p>
-                    
-                    <form id="formRegistro">
-                        <div class="form-group-sm">
-                            <label>DNI</label>
-                            <input type="number" id="regDni" placeholder="Tu número de DNI" required>
-                        </div>
-                        <div class="form-group-sm">
-                            <label>Nombre y Apellido</label>
-                            <input type="text" id="regNombre" placeholder="Ej: Juan Pérez" required>
-                        </div>
-                        <div class="form-group-sm">
-                            <label>Teléfono (WhatsApp)</label>
-                            <input type="tel" id="regTelefono" placeholder="Ej: 3425688013" required>
-                        </div>
-                        <div class="form-group-sm">
-                            <label>Correo Electrónico</label>
-                            <input type="email" id="regEmail" placeholder="ejemplo@email.com" required>
-                        </div>
-                        
-                        <button type="button" class="btn-red" onclick="registrarCliente()">
-                            <i class="fa-solid fa-user-plus"></i> REGISTRARME COMO CLIENTE
-                        </button>
-                    </form>
-                </div>
-
-                <!-- PESTAÑA 3: MIS TURNOS / CANCELAR -->
+                <!-- PESTAÑA 3: MIS TURNOS / CANCELAR (TERCERA) -->
                 <div id="tab-cancelar" class="tab-content">
                     <h4 style="font-size:14px; margin-bottom:10px;">CONSULTAR O CANCELAR TURNO</h4>
                     <div class="form-group-sm">
@@ -507,6 +603,53 @@
         </div>
     </section>
 
+    <!-- FOOTER Y UBICACIÓN CON MAPS E INSTAGRAM -->
+    <div class="benefits-bar" id="contacto">
+        <div class="benefits-grid">
+            <div class="benefit-item">
+                <i class="fa-solid fa-location-dot"></i>
+                <div class="benefit-info">
+                    <h5>UBICACIÓN</h5>
+                    <p>Av. Luján 4156, Santo Tomé</p>
+                    <a href="https://maps.app.goo.gl/iBWNATXhKhPDkS2x8" target="_blank" class="btn-maps">
+                        <i class="fa-solid fa-map-location-dot"></i> Cómo Llegar
+                    </a>
+                </div>
+            </div>
+            <div class="benefit-item">
+                <i class="fa-brands fa-instagram"></i>
+                <div class="benefit-info">
+                    <h5>INSTAGRAM</h5>
+                    <p>@masracingmotomecanica</p>
+                    <a href="https://www.instagram.com/masracingmotomecanica" target="_blank" class="btn-maps">
+                        <i class="fa-brands fa-instagram"></i> Seguir
+                    </a>
+                </div>
+            </div>
+            <div class="benefit-item">
+                <i class="fa-solid fa-headset"></i>
+                <div class="benefit-info">
+                    <h5>ATENCIÓN</h5>
+                    <p>Asesoramiento a medida</p>
+                </div>
+            </div>
+            <div class="benefit-item">
+                <i class="fa-solid fa-shield"></i>
+                <div class="benefit-info">
+                    <h5>GARANTÍA</h5>
+                    <p>Calidad y respaldo</p>
+                </div>
+            </div>
+            <div class="benefit-item">
+                <i class="fa-solid fa-heart"></i>
+                <div class="benefit-info">
+                    <h5>PASIÓN</h5>
+                    <p>Somos motociclistas</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         const NUMERO_WHATSAPP = "5493425688013";
         const HORARIOS_DISPONIBLES = ["09:00 HS", "11:00 HS", "15:00 HS", "17:00 HS"];
@@ -520,7 +663,9 @@
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             
-            event.currentTarget.classList.add('active');
+            const selectedBtn = document.getElementById('btn-' + tabId);
+            if(selectedBtn) selectedBtn.classList.add('active');
+            
             document.getElementById(tabId).classList.add('active');
         }
 
@@ -552,7 +697,7 @@
             localStorage.setItem('masracing_clientes', JSON.stringify(clientesBD));
             alert("¡Registro exitoso! Ya podés solicitar tus turnos con tu DNI.");
             
-            // Auto-completar en el turno
+            // Auto-completar en el turno y pasar a la pestaña de pedir turno
             document.getElementById('turnoDni').value = dni;
             verificarDniAuto();
             switchTab('tab-turno');
@@ -618,12 +763,13 @@
             const repuestos = document.getElementById('repuestosModo').value;
 
             if (!dni) {
-                alert("Por favor ingresá tu DNI o registrate en la pestaña 'Registro'.");
+                alert("Por favor ingresá tu DNI o registrate en la pestaña '1. Registro'.");
+                switchTab('tab-registro');
                 return;
             }
 
             if (!clientesBD[dni]) {
-                alert("Este DNI no está registrado. Por favor registrate antes en la pestaña 'Registro / DNI'.");
+                alert("Este DNI no está registrado. Te redirigimos a la pestaña '1. Registro' para registrarte.");
                 switchTab('tab-registro');
                 document.getElementById('regDni').value = dni;
                 return;
