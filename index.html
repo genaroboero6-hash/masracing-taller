@@ -7,428 +7,99 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --rojo-racing: #E52421;
-            --negro-fondo: #0A0B0D;
-            --gris-dark: #121417;
-            --gris-card: #1A1D22;
-            --gris-input: #0F1114;
-            --gris-borde: #2A2E35;
-            --texto-blanco: #FFFFFF;
-            --texto-gris: #9EA3AE;
-            --verde-exito: #28a745;
-            --instagram-color: #E1306C;
-        }
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Montserrat:wght@400;500;600;700;800;900&display=swap');
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+:root{
+  --red:#e52421;--red-dark:#b91512;--red-soft:#ff4b47;--black:#070809;--bg:#0b0d0f;
+  --surface:#111417;--surface-2:#171a1e;--surface-3:#1d2126;--input:#0b0d10;
+  --line:rgba(255,255,255,.09);--line-strong:rgba(255,255,255,.15);
+  --white:#fff;--muted:#9299a5;--muted-2:#68707c;--green:#31d17c;
+  --shadow:0 24px 70px rgba(0,0,0,.42);--radius:18px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Montserrat',sans-serif;background:radial-gradient(circle at 70% 10%,rgba(229,36,33,.07),transparent 28%),var(--black);color:var(--white);line-height:1.5;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.22;background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(to bottom,black,transparent 75%);z-index:-1}
+a{color:inherit}
+button,input,select{font:inherit}
 
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background-color: var(--negro-fondo);
-            color: var(--texto-blanco);
-            line-height: 1.4;
-        }
+/* HEADER */
+header{position:sticky;top:0;z-index:1000;min-height:76px;padding:0 clamp(20px,4vw,64px);display:flex;align-items:center;justify-content:space-between;gap:28px;background:rgba(7,8,9,.78);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid rgba(255,255,255,.08)}
+header:after{content:"";position:absolute;left:0;bottom:-1px;width:34%;height:2px;background:linear-gradient(90deg,var(--red),transparent)}
+.logo-text{position:relative;font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:900;line-height:1;text-decoration:none;font-style:italic;letter-spacing:-1px;text-transform:uppercase;white-space:nowrap}
+.logo-text:after{content:"MOTOMECÁNICA";display:block;margin-top:5px;font-family:'Montserrat',sans-serif;font-size:7px;letter-spacing:3px;font-style:normal;color:var(--muted);font-weight:700}
+.logo-text span{color:var(--red);text-shadow:0 0 25px rgba(229,36,33,.25)}
+nav{display:flex;align-items:center;justify-content:center;gap:6px;flex:1}
+nav a{position:relative;padding:10px 13px;color:#c9cdd4;text-decoration:none;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1.3px;border-radius:9px;transition:.25s ease}
+nav a:after{content:"";position:absolute;left:13px;right:13px;bottom:4px;height:2px;background:var(--red);transform:scaleX(0);transform-origin:center;transition:.25s}
+nav a:hover,nav a.active{color:#fff;background:rgba(255,255,255,.045)}
+nav a:hover:after,nav a.active:after{transform:scaleX(1)}
+.nav-social{display:flex;align-items:center}
+.btn-ig{display:inline-flex;align-items:center;gap:8px;padding:11px 16px;border:1px solid rgba(255,255,255,.12);border-radius:999px;background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,.025));box-shadow:inset 0 1px 0 rgba(255,255,255,.08);font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;text-decoration:none;transition:.25s}
+.btn-ig:hover{transform:translateY(-2px);border-color:rgba(225,48,108,.55);box-shadow:0 10px 30px rgba(225,48,108,.16)}
 
-        /* HEADER / NAV */
-        header {
-            background-color: rgba(10, 11, 13, 0.95);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 40px;
-            border-bottom: 1px solid var(--gris-borde);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
+/* HERO */
+.hero{position:relative;isolation:isolate;max-width:1500px;min-height:650px;margin:0 auto;padding:clamp(42px,6vw,84px) clamp(22px,5vw,72px);display:grid;grid-template-columns:minmax(0,1fr) minmax(420px,500px);align-items:center;gap:clamp(35px,7vw,100px);overflow:hidden;background:linear-gradient(90deg,rgba(7,8,9,.98) 0%,rgba(7,8,9,.88) 34%,rgba(7,8,9,.45) 65%,rgba(7,8,9,.9) 100%),url('https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=1920&auto=format&fit=crop') center/cover no-repeat;border-bottom:1px solid var(--line)}
+.hero:before{content:"";position:absolute;inset:auto -10% -180px auto;width:620px;height:620px;background:radial-gradient(circle,rgba(229,36,33,.18),transparent 66%);filter:blur(20px);z-index:-1}
+.hero:after{content:"MAS RACING // 2026";position:absolute;right:35px;bottom:28px;font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:4px;color:rgba(255,255,255,.28);transform:rotate(-90deg);transform-origin:right bottom}
+.hero-text{max-width:650px;padding-top:0;animation:rise .7s ease both}
+.hero-text:before{content:"MOTOMECÁNICA · SERVICIO · PERFORMANCE";display:inline-flex;padding:7px 11px;margin-bottom:20px;border:1px solid rgba(229,36,33,.35);border-radius:999px;background:rgba(229,36,33,.08);color:#ff7773;font-size:9px;font-weight:800;letter-spacing:2px}
+.hero-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(58px,7vw,100px);font-weight:900;font-style:italic;line-height:.86;letter-spacing:-2px;text-transform:uppercase;margin-bottom:24px;text-wrap:balance}
+.hero-title span{display:block;color:var(--red);text-shadow:0 8px 35px rgba(229,36,33,.18)}
+.hero-subtitle{max-width:570px;color:#b7bdc7;font-size:14px;line-height:1.8;margin-bottom:30px}
+.hero-text:after{content:"TURNOS ONLINE  •  HISTORIAL DIGITAL  •  ATENCIÓN PERSONALIZADA";display:block;color:var(--muted-2);font-size:9px;font-weight:800;letter-spacing:1.5px}
+.card-container{width:100%;animation:rise .8s .08s ease both}
+.turno-card-unified{position:relative;background:linear-gradient(145deg,rgba(25,29,34,.97),rgba(12,14,17,.98));border:1px solid var(--line-strong);border-radius:22px;padding:22px;box-shadow:var(--shadow),0 0 0 1px rgba(229,36,33,.035);overflow:hidden}
+.turno-card-unified:before{content:"";position:absolute;left:0;top:0;width:100%;height:3px;background:linear-gradient(90deg,var(--red),#ff615d,transparent)}
+.turno-card-unified:after{content:"";position:absolute;right:-90px;top:-90px;width:180px;height:180px;border-radius:50%;background:rgba(229,36,33,.07);filter:blur(5px);pointer-events:none}
+.tabs-header{position:relative;z-index:2;display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-bottom:22px;padding:5px;border:1px solid var(--line);border-radius:13px;background:#0a0c0f}
+.tab-btn{min-width:0;background:transparent;border:0;color:#727a86;font-weight:800;font-size:8px;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;padding:10px 5px;border-radius:9px;transition:.22s;line-height:1.25}
+.tab-btn i{display:block;font-size:13px;margin-bottom:5px}
+.tab-btn:hover{color:#fff;background:rgba(255,255,255,.04)}
+.tab-btn.active{color:#fff;background:linear-gradient(135deg,var(--red),#bd1714);box-shadow:0 8px 18px rgba(229,36,33,.22)}
+.tab-content{display:none;animation:fadeIn .3s ease}.tab-content.active{display:block}
+.tab-content h4{font-family:'Barlow Condensed',sans-serif;font-size:21px;letter-spacing:.3px}
+.tab-content>p{color:var(--muted);line-height:1.6}
+.form-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-group-sm{margin-bottom:13px}.form-group-sm.full{grid-column:1/-1}
+.form-group-sm label{display:flex;align-items:center;gap:6px;margin-bottom:6px;color:#8f97a3;font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:1px}
+.form-group-sm input,.form-group-sm select{width:100%;height:43px;background:rgba(6,8,10,.8);border:1px solid var(--line);border-radius:10px;color:#fff;padding:0 12px;font-size:11px;outline:none;transition:.2s;appearance:auto}
+.form-group-sm input::placeholder{color:#555d68}.form-group-sm input:hover,.form-group-sm select:hover{border-color:rgba(255,255,255,.16)}
+.form-group-sm input:focus,.form-group-sm select:focus{border-color:rgba(229,36,33,.8);box-shadow:0 0 0 3px rgba(229,36,33,.1)}
+.form-group-sm input[type=date]{color-scheme:dark}
+.btn-red{width:100%;min-height:44px;background:linear-gradient(135deg,#ed2b27,#bf1714);color:#fff;border:1px solid rgba(255,255,255,.08);padding:12px 16px;border-radius:10px;font-weight:900;font-size:10px;text-transform:uppercase;cursor:pointer;letter-spacing:1px;display:flex;justify-content:center;align-items:center;gap:8px;transition:.25s;box-shadow:0 8px 22px rgba(229,36,33,.16);margin-top:10px}
+.btn-red:hover{transform:translateY(-2px);background:linear-gradient(135deg,#ff3935,#d41b18);box-shadow:0 12px 28px rgba(229,36,33,.25)}
+.btn-cancel{background:rgba(160,25,25,.16);border-color:rgba(229,36,33,.35);box-shadow:none}.btn-cancel:hover{background:#8d1715}
+.profile-badge{background:linear-gradient(135deg,rgba(229,36,33,.075),rgba(255,255,255,.025));border:1px solid rgba(229,36,33,.42);border-radius:12px;padding:13px;margin-bottom:15px;font-size:10px}
+.profile-badge p{margin-bottom:4px}.discount-tag{display:inline-block;background:rgba(49,209,124,.12);border:1px solid rgba(49,209,124,.25);color:#58e493;font-weight:800;padding:4px 8px;border-radius:999px;font-size:8px;margin-top:6px}
+.my-turnos-list{max-height:230px;overflow-y:auto;margin-top:15px;padding-right:3px}.my-turnos-list::-webkit-scrollbar{width:4px}.my-turnos-list::-webkit-scrollbar-thumb{background:#333;border-radius:99px}
+.turno-item{background:rgba(7,9,11,.72);border:1px solid var(--line);border-radius:10px;padding:11px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:9px}
 
-        .logo-text {
-            font-size: 20px;
-            font-weight: 900;
-            font-style: italic;
-            color: var(--texto-blanco);
-            text-decoration: none;
-            text-transform: uppercase;
-        }
+/* SERVICES */
+.main-section{max-width:1500px;margin:0 auto;padding:90px clamp(22px,5vw,72px)}
+.section-title{display:flex;align-items:center;justify-content:center;gap:16px;font-family:'Barlow Condensed',sans-serif;font-size:42px;font-weight:900;font-style:italic;letter-spacing:.5px;text-transform:uppercase;margin-bottom:38px}
+.section-title:before,.section-title:after{content:"";height:1px;flex:1;max-width:170px;background:linear-gradient(90deg,transparent,var(--line-strong))}.section-title:after{background:linear-gradient(90deg,var(--line-strong),transparent)}
+.services-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.service-card{position:relative;min-height:190px;background:linear-gradient(160deg,#171b20,#0f1114);border:1px solid var(--line);border-radius:16px;padding:25px 18px 18px;text-align:left;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;transition:.28s}
+.service-card:before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(229,36,33,.12),transparent 45%);opacity:0;transition:.28s}
+.service-card:hover{transform:translateY(-7px);border-color:rgba(229,36,33,.42);box-shadow:0 18px 45px rgba(0,0,0,.35)}.service-card:hover:before{opacity:1}
+.service-card i{position:relative;z-index:1;font-size:27px;color:var(--red);margin-bottom:22px}.service-card h4{position:relative;z-index:1;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;font-style:italic;letter-spacing:.6px;margin-bottom:20px}
+.service-card:after{content:"SERVICIO PROFESIONAL";position:absolute;top:17px;right:16px;font-size:6px;letter-spacing:1.3px;color:#555d68;font-weight:800}
+.btn-outline{position:relative;z-index:2;border:1px solid rgba(229,36,33,.5);color:#ff625e;background:rgba(229,36,33,.035);padding:9px 12px;border-radius:8px;font-size:8px;font-weight:900;cursor:pointer;width:100%;letter-spacing:1px;transition:.22s}.btn-outline:hover,.btn-outline.selected{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 8px 20px rgba(229,36,33,.2)}
 
-        .logo-text span {
-            color: var(--rojo-racing);
-        }
+/* FOOTER / CONTACT */
+.benefits-bar{position:relative;background:#080a0c;border-top:1px solid var(--line);padding:48px clamp(22px,5vw,72px);margin-top:0;overflow:hidden}.benefits-bar:before{content:"";position:absolute;left:50%;top:-250px;transform:translateX(-50%);width:600px;height:350px;background:radial-gradient(circle,rgba(229,36,33,.08),transparent 68%)}
+.benefits-grid{position:relative;z-index:1;max-width:1500px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:22px;align-items:stretch}.benefit-item{display:flex;align-items:flex-start;gap:13px;padding:16px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.018)}.benefit-item i{flex:0 0 auto;font-size:18px;color:var(--red);margin-top:2px}.benefit-info h5{font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}.benefit-info p{font-size:9px;color:var(--muted);line-height:1.5}.btn-maps{background:rgba(255,255,255,.035);border:1px solid var(--line-strong);color:#fff;padding:7px 9px;border-radius:7px;font-size:7px;font-weight:800;text-transform:uppercase;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:.2s;margin-top:8px}.btn-maps:hover{background:var(--red);border-color:var(--red)}
+body>div:last-child{background:#060708!important;border-color:var(--line)!important;color:#454c56!important}body>div:last-child a{color:#454c56!important}
 
-        nav {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
+/* MOTION */
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
 
-        nav a {
-            color: var(--texto-blanco);
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: color 0.2s;
-        }
-
-        nav a.active, nav a:hover {
-            color: var(--rojo-racing);
-        }
-
-        .nav-social {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .btn-ig {
-            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-            color: white;
-            text-decoration: none;
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 800;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .btn-ig:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 15px rgba(225, 48, 108, 0.4);
-        }
-
-        /* HERO SECTION */
-        .hero {
-            position: relative;
-            background: linear-gradient(90deg, rgba(10,11,13,0.92) 30%, rgba(10,11,13,0.65) 60%, rgba(10,11,13,0.9) 100%), 
-                        url('https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=1920&auto=format&fit=crop') center/cover no-repeat;
-            min-height: 600px;
-            padding: 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            max-width: 1400px;
-            margin: 0 auto;
-            gap: 30px;
-        }
-
-        .hero-text {
-            max-width: 480px;
-            padding-top: 20px;
-        }
-
-        .hero-title {
-            font-size: 46px;
-            font-weight: 900;
-            font-style: italic;
-            line-height: 1.1;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-        }
-
-        .hero-title span {
-            color: var(--rojo-racing);
-            display: block;
-        }
-
-        .hero-subtitle {
-            color: var(--texto-gris);
-            font-size: 14px;
-            margin-bottom: 25px;
-        }
-
-        /* TARJETAS PRINCIPALES */
-        .card-container {
-            width: 480px;
-        }
-
-        .turno-card-unified {
-            background-color: var(--gris-card);
-            border: 1px solid var(--gris-borde);
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-        }
-
-        .tabs-header {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--gris-borde);
-            padding-bottom: 10px;
-        }
-
-        .tab-btn {
-            background: none;
-            border: none;
-            color: var(--texto-gris);
-            font-weight: 800;
-            font-size: 11px;
-            text-transform: uppercase;
-            cursor: pointer;
-            padding: 8px 10px;
-            border-radius: 4px;
-            flex: 1;
-            text-align: center;
-        }
-
-        .tab-btn.active {
-            color: var(--texto-blanco);
-            background-color: var(--rojo-racing);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .form-grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .form-group-sm {
-            margin-bottom: 12px;
-        }
-
-        .form-group-sm.full {
-            grid-column: span 2;
-        }
-
-        .form-group-sm label {
-            display: block;
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--texto-gris);
-            text-transform: uppercase;
-            margin-bottom: 5px;
-        }
-
-        .form-group-sm input, .form-group-sm select {
-            width: 100%;
-            background-color: var(--gris-input);
-            border: 1px solid var(--gris-borde);
-            color: var(--texto-blanco);
-            padding: 9px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-        }
-
-        .btn-red {
-            width: 100%;
-            background-color: var(--rojo-racing);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: 800;
-            font-size: 12px;
-            text-transform: uppercase;
-            cursor: pointer;
-            letter-spacing: 1px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            transition: background 0.2s;
-            margin-top: 10px;
-        }
-
-        .btn-red:hover {
-            background-color: #C81B18;
-        }
-
-        .btn-cancel {
-            background-color: #4a1515;
-            border: 1px solid #8b0000;
-        }
-        .btn-cancel:hover {
-            background-color: #6d1b1b;
-        }
-
-        /* CLIENT PROFILE BOX */
-        .profile-badge {
-            background-color: #15181e;
-            border: 1px solid var(--rojo-racing);
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 15px;
-            font-size: 12px;
-        }
-
-        .profile-badge p {
-            margin-bottom: 4px;
-        }
-
-        .discount-tag {
-            display: inline-block;
-            background-color: var(--verde-exito);
-            color: white;
-            font-weight: 800;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 10px;
-            margin-top: 5px;
-        }
-
-        /* SECCIÓN SERVICIOS */
-        .main-section {
-            max-width: 1400px;
-            margin: 40px auto;
-            padding: 0 40px;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 22px;
-            font-weight: 800;
-            text-transform: uppercase;
-            margin-bottom: 25px;
-        }
-
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 15px;
-        }
-
-        .service-card {
-            background-color: var(--gris-card);
-            border: 1px solid var(--gris-borde);
-            border-radius: 10px;
-            padding: 20px 15px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .service-card i {
-            font-size: 28px;
-            color: var(--rojo-racing);
-            margin-bottom: 15px;
-        }
-
-        .service-card h4 {
-            font-size: 14px;
-            font-weight: 800;
-            margin-bottom: 10px;
-        }
-
-        .btn-outline {
-            border: 1px solid var(--rojo-racing);
-            color: var(--rojo-racing);
-            background: transparent;
-            padding: 6px 12px;
-            border-radius: 4px;
-            font-size: 10px;
-            font-weight: 800;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        .btn-outline.selected {
-            background-color: var(--rojo-racing);
-            color: white;
-        }
-
-        .my-turnos-list {
-            max-height: 200px;
-            overflow-y: auto;
-            margin-top: 15px;
-        }
-
-        .turno-item {
-            background: var(--gris-input);
-            border: 1px solid var(--gris-borde);
-            border-radius: 6px;
-            padding: 10px;
-            margin-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 11px;
-        }
-
-        /* FOOTER / BENEFICIOS & UBICACIÓN */
-        .benefits-bar {
-            background-color: #08090B;
-            border-top: 1px solid var(--gris-borde);
-            padding: 30px 40px;
-            margin-top: 50px;
-        }
-
-        .benefits-grid {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 20px;
-            align-items: center;
-        }
-
-        .benefit-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .benefit-item i {
-            font-size: 24px;
-            color: var(--rojo-racing);
-        }
-
-        .benefit-info h5 {
-            font-size: 12px;
-            font-weight: 800;
-            text-transform: uppercase;
-        }
-
-        .benefit-info p {
-            font-size: 11px;
-            color: var(--texto-gris);
-        }
-
-        .btn-maps {
-            background-color: #1A1D22;
-            border: 1px solid var(--rojo-racing);
-            color: var(--texto-blanco);
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: background 0.2s;
-            margin-top: 5px;
-        }
-
-        .btn-maps:hover {
-            background-color: var(--rojo-racing);
-        }
-
-        @media (max-width: 1024px) {
-            .hero { flex-direction: column; text-align: center; }
-            .card-container { width: 100%; }
-            .services-grid { grid-template-columns: repeat(2, 1fr); }
-            .benefits-grid { grid-template-columns: repeat(2, 1fr); }
-            header { flex-direction: column; gap: 15px; }
-        }
-    </style>
+/* RESPONSIVE */
+@media(max-width:1180px){header{padding-inline:24px}.hero{grid-template-columns:1fr 450px}.services-grid{grid-template-columns:repeat(3,1fr)}.benefits-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:900px){header{flex-wrap:wrap;padding:16px 20px;gap:13px}.logo-text{font-size:26px}nav{order:3;flex-basis:100%;overflow-x:auto;justify-content:flex-start;padding-bottom:2px}nav a{white-space:nowrap}.hero{grid-template-columns:1fr;min-height:auto;padding-top:65px}.hero-text{max-width:760px}.card-container{max-width:620px;margin:0 auto}.hero:after{display:none}.services-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){header{min-height:auto}.nav-social{display:none}.hero{padding:48px 16px 45px;background-position:62% center}.hero-title{font-size:59px;letter-spacing:-1px}.hero-subtitle{font-size:12px}.turno-card-unified{padding:13px;border-radius:16px}.tabs-header{grid-template-columns:repeat(5,minmax(82px,1fr));overflow-x:auto;justify-content:start}.tab-btn{font-size:7px}.form-grid-2{grid-template-columns:1fr}.form-group-sm.full{grid-column:auto}.main-section{padding:62px 16px}.section-title{font-size:34px}.section-title:before,.section-title:after{max-width:45px}.services-grid{grid-template-columns:1fr}.service-card{min-height:165px}.benefits-grid{grid-template-columns:1fr}.benefits-bar{padding:35px 16px}.benefit-item{padding:14px}.logo-text:after{font-size:6px}}
+</style>
 </head>
 <body>
 
@@ -436,7 +107,7 @@
         <a href="#" class="logo-text">MAS <span>RACING</span></a>
         
         <nav>
-            <a href="#inicio">Inicio</a>
+            <a href="#inicio" class="active">Inicio</a>
             <a href="#servicios">Servicios</a>
             <a href="#turnos">Turnos y Registro</a>
             <a href="#contacto">Ubicación</a>
@@ -459,7 +130,7 @@
             <div class="turno-card-unified">
                 
                 <!-- PESTAÑAS DE NAVEGACIÓN (ORDENADAS: 1. REGISTRO, 2. PEDIR TURNO, 3. MIS TURNOS, 4. PANEL TALLER, 5. MI PERFIL) -->
-                <div class="tabs-header" style="flex-wrap: wrap;">
+                <div class="tabs-header">
                     <button class="tab-btn active" id="btn-tab-registro" onclick="switchTab('tab-registro')"><i class="fa-solid fa-id-card"></i> 1. Registro</button>
                     <button class="tab-btn" id="btn-tab-turno" onclick="switchTab('tab-turno')"><i class="fa-regular fa-calendar-plus"></i> 2. Pedir Turno</button>
                     <button class="tab-btn" id="btn-tab-cancelar" onclick="switchTab('tab-cancelar')"><i class="fa-regular fa-calendar-xmark"></i> 3. Mis Turnos</button>
