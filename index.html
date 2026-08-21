@@ -79,18 +79,20 @@
         .sponsors {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
         }
 
-        .sponsor-text {
-            font-size: 14px;
-            font-weight: 900;
-            font-style: italic;
-            letter-spacing: 1px;
+        .sponsor-logo {
+            height: 38px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.5));
+            transition: transform 0.2s;
         }
 
-        .monster { color: #00FF00; }
-        .redbull { color: #DB0A40; }
+        .sponsor-logo:hover {
+            transform: scale(1.05);
+        }
 
         /* HERO SECTION */
         .hero {
@@ -376,8 +378,8 @@
             <a href="#contacto">Contacto</a>
         </nav>
         <div class="sponsors">
-            <span class="sponsor-text monster"><i class="fa-solid fa-claw-marks"></i> MONSTER</span>
-            <span class="sponsor-text redbull">Red Bull RACING</span>
+            <img src="monster.png" alt="Monster Energy" class="sponsor-logo">
+            <img src="redbull.png" alt="Red Bull" class="sponsor-logo">
         </div>
     </header>
 
