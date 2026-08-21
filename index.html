@@ -6,10 +6,13 @@
   <title>MAS RACING - Motomecánica</title>
   <style>
     :root {
-      --primary: #ff3333;
-      --bg-dark: rgba(15, 15, 17, 0.85);
-      --card-bg: #1a1a1e;
+      --primary: #e63946;
+      --secondary: #1d3557;
+      --bg-dark: #0b0c10;
+      --card-bg: #1f2833;
       --text: #ffffff;
+      --accent: #45a29e;
+      --accent-glow: #66fcf1;
     }
 
     * {
@@ -20,116 +23,169 @@
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-dark);
       color: var(--text);
-      /* Foto de la moto de fondo */
-      background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.85)), url('moto-fondo.jpg') no-repeat center center fixed;
-      background-size: cover;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      line-height: 1.6;
     }
 
     header {
-      width: 100%;
+      background: #000000;
       padding: 20px;
       text-align: center;
-      background: rgba(10, 10, 12, 0.9);
-      border-bottom: 2px solid var(--primary);
+      border-bottom: 3px solid var(--primary);
     }
 
-    h1 {
-      font-size: 2.5rem;
+    header h1 {
+      font-size: 2.2rem;
       letter-spacing: 2px;
-      color: #fff;
+      color: var(--primary);
       text-transform: uppercase;
+    }
+
+    header p {
+      color: #c5c6c7;
+      font-size: 0.95rem;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      background: #111;
+      padding: 10px;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: bold;
+      padding: 6px 12px;
+      border-radius: 4px;
+      transition: background 0.3s;
+    }
+
+    nav a:hover {
+      background: var(--primary);
     }
 
     .container {
       max-width: 900px;
-      width: 90%;
-      margin: 40px auto;
-      background: var(--bg-dark);
-      padding: 30px;
-      border-radius: 16px;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      margin: 20px auto;
+      padding: 0 15px;
     }
 
-    /* Sección de Sponsors / Marcas */
-    .sponsors-section {
-      text-align: center;
-      margin-top: 30px;
-    }
-
-    .sponsors-title {
-      font-size: 1.2rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 20px;
-      color: #ccc;
-    }
-
-    .sponsors-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 30px;
-      flex-wrap: wrap;
-    }
-
-    .sponsor-card {
+    .section-card {
       background: var(--card-bg);
-      border: 1px solid #2a2a30;
-      border-radius: 12px;
-      padding: 15px 25px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border-radius: 10px;
+      padding: 25px;
+      margin-bottom: 25px;
+      border: 1px solid #333;
     }
 
-    .sponsor-card:hover {
-      transform: translateY(-5px);
+    h2 {
+      color: var(--accent-glow);
+      margin-bottom: 15px;
+      border-bottom: 2px solid var(--primary);
+      display: inline-block;
+      padding-bottom: 5px;
     }
 
-    .sponsor-card.monster:hover {
-      box-shadow: 0 0 15px rgba(0, 255, 0, 0.4);
-      border-color: #00ff00;
+    /* Formulario de Reserva */
+    .form-group {
+      margin-bottom: 15px;
     }
 
-    .sponsor-card.redbull:hover {
-      box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
-      border-color: #ff0000;
-    }
-
-    /* Tamaño de los logos PNG */
-    .sponsor-logo {
-      height: 70px;
-      width: auto;
-      object-fit: contain;
-      filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.6));
-    }
-
-    /* Botón principal de WhatsApp */
-    .btn-whatsapp {
+    label {
       display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    input, select, textarea {
       width: 100%;
-      max-width: 300px;
-      margin: 30px auto 0;
-      padding: 15px;
-      background-color: #25d366;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #444;
+      background: #0b0c10;
       color: #fff;
+      font-size: 1rem;
+    }
+
+    .price-display {
+      background: #000;
+      padding: 15px;
+      border-radius: 6px;
       text-align: center;
-      text-decoration: none;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--accent-glow);
+      margin: 15px 0;
+      border: 1px dashed var(--accent);
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 12px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
       font-size: 1.1rem;
       font-weight: bold;
-      border-radius: 8px;
-      transition: background 0.3s ease;
+      cursor: pointer;
+      transition: background 0.3s;
     }
 
-    .btn-whatsapp:hover {
-      background-color: #1eb954;
+    .btn-submit:hover {
+      background: #c12a36;
+    }
+
+    /* Tienda y Servicios */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+
+    .item-card {
+      background: #111;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      border: 1px solid #222;
+    }
+
+    .item-card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+    }
+
+    .item-card p {
+      color: var(--accent-glow);
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    /* Sponsors en texto */
+    .sponsors {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      font-weight: bold;
+      font-size: 1.2rem;
+      letter-spacing: 1px;
+      color: #888;
+      margin-top: 15px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: #000;
+      color: #777;
+      font-size: 0.9rem;
+      margin-top: 40px;
     }
   </style>
 </head>
@@ -137,33 +193,145 @@
 
   <header>
     <h1>MAS RACING</h1>
-    <p>Motomecánica & Service</p>
+    <p>Motomecánica & Mantenimiento Especializado</p>
   </header>
 
+  <nav>
+    <a href="#turnos">Reserva de Turnos</a>
+    <a href="#servicios">Servicios</a>
+    <a href="#tienda">Repuestos</a>
+    <a href="#contacto">Contacto</a>
+  </nav>
+
   <div class="container">
-    
-    <!-- Sección de Sponsors -->
-    <div class="sponsors-section">
-      <h2 class="sponsors-title">Sponsors Oficiales</h2>
-      <div class="sponsors-container">
-        
-        <!-- Logo Monster -->
-        <div class="sponsor-card monster">
-          <img src="monster.png" alt="Monster Energy" class="sponsor-logo">
+
+    <!-- Sección Turnos / Calculadora -->
+    <section id="turnos" class="section-card">
+      <h2>Reservar Turno</h2>
+      <form id="bookingForm">
+        <div class="form-group">
+          <label for="nombre">Nombre y Apellido:</label>
+          <input type="text" id="nombre" required placeholder="Tu nombre">
         </div>
 
-        <!-- Logo Red Bull -->
-        <div class="sponsor-card redbull">
-          <img src="redbull.png" alt="Red Bull" class="sponsor-logo">
+        <div class="form-group">
+          <label for="moto">Modelo de Moto:</label>
+          <input type="text" id="moto" required placeholder="Ej: Honda XR 150L">
         </div>
 
+        <div class="form-group">
+          <label for="cilindrada">Cilindrada:</label>
+          <select id="cilindrada" onchange="calcularPrecio()">
+            <option value="110">Hasta 110 cc</option>
+            <option value="150">125 cc - 200 cc</option>
+            <option value="250">250 cc o más</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="insumos">Modalidad de Insumos:</label>
+          <select id="insumos" onchange="calcularPrecio()">
+            <option value="taller">Insumos provistos por el taller</option>
+            <option value="cliente">Mano de obra sola (Insumos propios)</option>
+          </select>
+        </div>
+
+        <div class="price-display">
+          Estimado Service: $<span id="precioEstimado">15000</span>
+        </div>
+
+        <button type="button" class="btn-submit" onclick="enviarWhatsApp()">Confirmar Turno por WhatsApp</button>
+      </form>
+    </section>
+
+    <!-- Sección Servicios -->
+    <section id="servicios" class="section-card">
+      <h2>Servicios Taller</h2>
+      <div class="grid">
+        <div class="item-card">
+          <h3>Service General</h3>
+          <p>Aceite, filtros y ajuste</p>
+        </div>
+        <div class="item-card">
+          <h3>Frenos & Transmisión</h3>
+          <p>Revisión y cambio</p>
+        </div>
+        <div class="item-card">
+          <h3>Diagnóstico Electrónico</h3>
+          <p>Chequeo de fallas</p>
+        </div>
       </div>
-    </div>
+    </section>
 
-    <!-- Botón Turnos / Contacto -->
-    <a href="https://wa.me/5493425688013" class="btn-whatsapp" target="_blank">Agendar Turno por WhatsApp</a>
+    <!-- Sección Tienda -->
+    <section id="tienda" class="section-card">
+      <h2>Catálogo de Repuestos</h2>
+      <div class="grid">
+        <div class="item-card">
+          <h3>Aceite Sintético/Semi</h3>
+          <p>Consultar stock</p>
+        </div>
+        <div class="item-card">
+          <h3>Bujías & Filtros</h3>
+          <p>Calidad original</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección Sponsors / Marcas -->
+    <section id="sponsors" class="section-card" style="text-align: center;">
+      <h2>Marcas & Sponsors</h2>
+      <div class="sponsors">
+        <span>MONSTER</span>
+        <span>RED BULL</span>
+      </div>
+    </section>
+
+    <!-- Sección Contacto -->
+    <section id="contacto" class="section-card">
+      <h2>Ubicación & Contacto</h2>
+      <p><strong>Dirección:</strong> Av. Luján 4156, Santo Tomé</p>
+      <p><strong>Teléfono:</strong> 0342 568-8013</p>
+    </section>
 
   </div>
+
+  <footer>
+    <p>&copy; 2026 MAS RACING Motomecánica - Todos los derechos reservados.</p>
+  </footer>
+
+  <script>
+    function calcularPrecio() {
+      const cc = document.getElementById('cilindrada').value;
+      const insumos = document.getElementById('insumos').value;
+      let base = 12000;
+
+      if (cc === '150') base += 3000;
+      if (cc === '250') base += 7000;
+
+      if (insumos === 'taller') base += 8000;
+
+      document.getElementById('precioEstimado').innerText = base;
+    }
+
+    function enviarWhatsApp() {
+      const nombre = document.getElementById('nombre').value;
+      const moto = document.getElementById('moto').value;
+      const cc = document.getElementById('cilindrada').value;
+      const insumos = document.getElementById('insumos').value;
+      const precio = document.getElementById('precioEstimado').innerText;
+
+      if (!nombre || !moto) {
+        alert('Por favor, completá tu nombre y el modelo de tu moto.');
+        return;
+      }
+
+      const mensaje = `Hola! Quisiera agendar un turno para mi moto.%0A%0A*Nombre:* ${nombre}%0A*Moto:* ${moto} (${cc} cc)%0A*Insumos:* ${insumos}%0A*Estimado:* $${precio}`;
+      const url = `https://wa.me/5493425688013?text=${mensaje}`;
+      
+      window.open(url, '_blank');
+    }
+  </script>
 
 </body>
 </html>
