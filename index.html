@@ -1,1 +1,409 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAS RACING - Motomecánica</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --rojo-racing: #E52421;
+            --gris-oscuro: #1E2125;
+            --gris-tarjeta: #2B2E34;
+            --gris-linea: #3A3F47;
+            --texto-blanco: #FFFFFF;
+            --texto-gris: #A3A8B1;
+            --verde-wa: #25D366;
+        }
 
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--gris-oscuro);
+            color: var(--texto-blanco);
+            line-height: 1.5;
+        }
+
+        header {
+            background-color: #15171A;
+            padding: 25px 20px;
+            text-align: center;
+            border-bottom: 4px solid var(--rojo-racing);
+        }
+
+        .logo-title {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin: 0;
+            color: var(--texto-blanco);
+        }
+
+        .logo-title span {
+            color: var(--rojo-racing);
+        }
+
+        .subtitle {
+            margin: 5px 0 0;
+            color: var(--rojo-racing);
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #191B1F;
+            padding: 12px;
+            gap: 10px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        nav a {
+            color: var(--texto-blanco);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 13px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background-color: var(--gris-tarjeta);
+            transition: all 0.2s ease;
+        }
+
+        nav a:hover, nav a.active {
+            background-color: var(--rojo-racing);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px 15px;
+        }
+
+        .card {
+            background-color: var(--gris-tarjeta);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            border: 1px solid var(--gris-linea);
+        }
+
+        h2 {
+            color: var(--texto-blanco);
+            font-size: 20px;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2::before {
+            content: '';
+            display: inline-block;
+            width: 5px;
+            height: 20px;
+            background-color: var(--rojo-racing);
+            border-radius: 3px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--texto-gris);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid var(--gris-linea);
+            background-color: #1E2125;
+            color: #FFF;
+            font-size: 15px;
+            font-family: inherit;
+            box-sizing: border-box;
+            transition: border 0.2s;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--rojo-racing);
+            outline: none;
+        }
+
+        .price-card {
+            background: linear-gradient(135deg, #1E2125 0%, #25282F 100%);
+            border: 1px solid var(--rojo-racing);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .price-card .label {
+            font-size: 12px;
+            color: var(--texto-gris);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .price-card .amount {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--texto-blanco);
+            margin: 5px 0;
+        }
+
+        .btn-whatsapp {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            background-color: var(--rojo-racing);
+            color: white;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .btn-whatsapp:hover {
+            background-color: #c81e1b;
+            transform: translateY(-2px);
+        }
+
+        .grid-store {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .product-card {
+            background-color: #1E2125;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid var(--gris-linea);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .product-card h3 {
+            font-size: 15px;
+            margin: 10px 0 5px;
+            font-weight: 600;
+        }
+
+        .product-card .price {
+            color: var(--rojo-racing);
+            font-weight: 800;
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .btn-small {
+            background-color: var(--gris-tarjeta);
+            color: var(--texto-blanco);
+            border: 1px solid var(--gris-linea);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            display: block;
+            transition: all 0.2s;
+        }
+
+        .btn-small:hover {
+            background-color: var(--rojo-racing);
+            border-color: var(--rojo-racing);
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            background-color: #15171A;
+            color: var(--texto-gris);
+            font-size: 12px;
+            border-top: 1px solid var(--gris-linea);
+        }
+
+        footer a {
+            color: var(--rojo-racing);
+            text-decoration: none;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-title">MAS <span>RACING</span></div>
+        <div class="subtitle">MOTOMECANICA</div>
+    </header>
+
+    <nav>
+        <a href="#turnos" class="active">Turnos</a>
+        <a href="#tienda">Repuestos</a>
+        <a href="#contacto">Taller</a>
+    </nav>
+
+    <div class="container">
+
+        <div id="turnos" class="card">
+            <h2>RESERVA TU TURNO</h2>
+            <form id="turnoForm">
+                <div class="form-group">
+                    <label>Nombre y Apellido</label>
+                    <input type="text" id="nombre" placeholder="Ej: Juan Pérez" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Marca y Modelo de la Moto</label>
+                    <input type="text" id="moto" placeholder="Ej: Honda XR 150" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Cilindrada</label>
+                    <select id="cilindrada" onchange="calcularPrecio()">
+                        <option value="110">Hasta 110cc</option>
+                        <option value="150" selected>125cc a 200cc</option>
+                        <option value="250">250cc o superior</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Insumos / Materiales</label>
+                    <select id="modalidad" onchange="calcularPrecio()">
+                        <option value="taller">Mecánico provee insumos (Service Completo)</option>
+                        <option value="cliente">Cliente trae sus insumos (Solo Mano de Obra)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Fecha</label>
+                    <input type="date" id="fecha" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Horario Disponible</label>
+                    <select id="hora" required>
+                        <option value="09:00 HS">09:00 HS</option>
+                        <option value="11:00 HS">11:00 HS</option>
+                        <option value="15:00 HS">15:00 HS</option>
+                        <option value="17:00 HS">17:00 HS</option>
+                    </select>
+                </div>
+
+                <div class="price-card">
+                    <div class="label">Precio estimado del trabajo</div>
+                    <div class="amount" id="precioEstimado">$ 25.000</div>
+                    <span style="font-size: 11px; color: var(--texto-gris);">Sujeto a verificación presencial del vehículo</span>
+                </div>
+
+                <button type="button" class="btn-whatsapp" onclick="enviarWhatsApp()">
+                    Confirmar Turno por WhatsApp
+                </button>
+            </form>
+        </div>
+
+        <div id="tienda" class="card">
+            <h2>REPUESTOS Y ELEMENTOS</h2>
+            <div class="grid-store">
+                <div class="product-card">
+                    <h3>Aceite Sintético 1L</h3>
+                    <div class="price">$ 12.500</div>
+                    <a href="https://wa.me/5493425688013?text=Hola!%20Consulto%20stock%20de%20Aceite%20Sintetico" class="btn-small">Consultar Stock</a>
+                </div>
+                <div class="product-card">
+                    <h3>Kit Transmisión</h3>
+                    <div class="price">$ 28.000</div>
+                    <a href="https://wa.me/5493425688013?text=Hola!%20Consulto%20stock%20de%20Kit%20Transmision" class="btn-small">Consultar Stock</a>
+                </div>
+                <div class="product-card">
+                    <h3>Filtro de Aire</h3>
+                    <div class="price">$ 8.500</div>
+                    <a href="https://wa.me/5493425688013?text=Hola!%20Consulto%20stock%20de%20Filtro%20de%20Aire" class="btn-small">Consultar Stock</a>
+                </div>
+            </div>
+        </div>
+
+        <div id="contacto" class="card">
+            <h2>UBICACIÓN DEL TALLER</h2>
+            <p style="font-size: 14px; color: var(--texto-gris); margin-bottom: 5px;"><strong>Teléfono / WhatsApp:</strong> 342 568-8013</p>
+            <p style="font-size: 14px; color: var(--texto-gris);"><strong>Horarios:</strong> Lunes a Viernes de 08:00 a 18:00 hs</p>
+        </div>
+
+    </div>
+
+    <footer>
+        Sitio web diseñado para MAS RACING Motomecánica
+    </footer>
+
+    <script>
+        const NUMERO_WHATSAPP = "5493425688013";
+
+        const precios = {
+            "110": { taller: 18000, cliente: 10000 },
+            "150": { taller: 25000, cliente: 14000 },
+            "250": { taller: 35000, cliente: 20000 }
+        };
+
+        function calcularPrecio() {
+            const cc = document.getElementById("cilindrada").value;
+            const modalidad = document.getElementById("modalidad").value;
+            const precio = precios[cc][modalidad];
+            document.getElementById("precioEstimado").innerText = "$ " + precio.toLocaleString("es-AR");
+        }
+
+        function enviarWhatsApp() {
+            const nombre = document.getElementById("nombre").value;
+            const moto = document.getElementById("moto").value;
+            const fecha = document.getElementById("fecha").value;
+            const hora = document.getElementById("hora").value;
+            const cc = document.getElementById("cilindrada").selectedOptions[0].text;
+            const modalidad = document.getElementById("modalidad").selectedOptions[0].text;
+            const precio = document.getElementById("precioEstimado").innerText;
+
+            if (!nombre || !moto || !fecha) {
+                alert("Por favor completa tu nombre, modelo de moto y fecha.");
+                return;
+            }
+
+            const mensaje = `Hola *MAS RACING*! Quisiera agendar un turno:%0A%0A` +
+                            `👤 *Cliente:* ${nombre}%0A` +
+                            `🏍️ *Moto:* ${moto} (${cc})%0A` +
+                            `🛠️ *Modalidad:* ${modalidad}%0A` +
+                            `📅 *Fecha:* ${fecha}%0A` +
+                            `⏰ *Hora:* ${hora}%0A` +
+                            `💰 *Precio Estimado:* ${precio}%0A%0A` +
+                            `¿Tienen disponibilidad para confirmar?`;
+
+            window.open(`https://wa.me/${NUMERO_WHATSAPP}?text=${mensaje}`, '_blank');
+        }
+
+        document.getElementById('fecha').min = new Date().toISOString().split("T")[0];
+    </script>
+</body>
+</html>
