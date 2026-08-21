@@ -16,6 +16,7 @@
             --gris-borde: #2A2E35;
             --texto-blanco: #FFFFFF;
             --texto-gris: #9EA3AE;
+            --verde-exito: #28a745;
         }
 
         * {
@@ -59,7 +60,8 @@
 
         nav {
             display: flex;
-            gap: 25px;
+            gap: 20px;
+            align-items: center;
         }
 
         nav a {
@@ -74,25 +76,6 @@
 
         nav a.active, nav a:hover {
             color: var(--rojo-racing);
-            border-bottom: 2px solid var(--rojo-racing);
-            padding-bottom: 4px;
-        }
-
-        .sponsors {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .sponsor-svg {
-            height: 32px;
-            width: auto;
-            fill: #FFFFFF;
-            transition: transform 0.2s;
-        }
-
-        .sponsor-svg:hover {
-            transform: scale(1.08);
         }
 
         /* HERO SECTION */
@@ -100,21 +83,23 @@
             position: relative;
             background: linear-gradient(90deg, rgba(10,11,13,0.92) 30%, rgba(10,11,13,0.65) 60%, rgba(10,11,13,0.9) 100%), 
                         url('https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=1920&auto=format&fit=crop') center/cover no-repeat;
-            min-height: 580px;
-            padding: 50px 40px;
+            min-height: 600px;
+            padding: 40px;
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             max-width: 1400px;
             margin: 0 auto;
+            gap: 30px;
         }
 
         .hero-text {
-            max-width: 500px;
+            max-width: 480px;
+            padding-top: 20px;
         }
 
         .hero-title {
-            font-size: 50px;
+            font-size: 46px;
             font-weight: 900;
             font-style: italic;
             line-height: 1.1;
@@ -129,52 +114,54 @@
 
         .hero-subtitle {
             color: var(--texto-gris);
-            font-size: 15px;
-            margin-bottom: 30px;
+            font-size: 14px;
+            margin-bottom: 25px;
         }
 
-        .features-inline {
-            display: flex;
-            gap: 20px;
+        /* TARJETAS PRINCIPALES */
+        .card-container {
+            width: 480px;
         }
 
-        .feature-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: var(--texto-blanco);
-        }
-
-        .feature-item i {
-            color: var(--rojo-racing);
-            font-size: 18px;
-        }
-
-        /* CARD UNIFICADA: TURNO + TU MOTO */
         .turno-card-unified {
             background-color: var(--gris-card);
             border: 1px solid var(--gris-borde);
             border-radius: 12px;
             padding: 25px;
-            width: 440px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
 
-        .turno-card-unified h3 {
-            font-size: 18px;
-            font-weight: 800;
-            text-transform: uppercase;
-            margin-bottom: 5px;
-            color: var(--texto-blanco);
+        .tabs-header {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--gris-borde);
+            padding-bottom: 10px;
         }
 
-        .turno-card-unified p.sub {
-            font-size: 12px;
+        .tab-btn {
+            background: none;
+            border: none;
             color: var(--texto-gris);
-            margin-bottom: 20px;
+            font-weight: 800;
+            font-size: 12px;
+            text-transform: uppercase;
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: 4px;
+        }
+
+        .tab-btn.active {
+            color: var(--texto-blanco);
+            background-color: var(--rojo-racing);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
         }
 
         .form-grid-2 {
@@ -215,10 +202,10 @@
             background-color: var(--rojo-racing);
             color: white;
             border: none;
-            padding: 14px;
+            padding: 12px;
             border-radius: 8px;
             font-weight: 800;
-            font-size: 13px;
+            font-size: 12px;
             text-transform: uppercase;
             cursor: pointer;
             letter-spacing: 1px;
@@ -234,7 +221,40 @@
             background-color: #C81B18;
         }
 
-        /* SECCIÓN SERVICIOS */
+        .btn-cancel {
+            background-color: #4a1515;
+            border: 1px solid #8b0000;
+        }
+        .btn-cancel:hover {
+            background-color: #6d1b1b;
+        }
+
+        /* CLIENT PROFILE BOX */
+        .profile-badge {
+            background-color: #15181e;
+            border: 1px solid var(--rojo-racing);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 15px;
+            font-size: 12px;
+        }
+
+        .profile-badge p {
+            margin-bottom: 4px;
+        }
+
+        .discount-tag {
+            display: inline-block;
+            background-color: var(--verde-exito);
+            color: white;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            margin-top: 5px;
+        }
+
+        /* SERVICIOS Y FOOTER */
         .main-section {
             max-width: 1400px;
             margin: 40px auto;
@@ -264,7 +284,6 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            align-items: center;
         }
 
         .service-card i {
@@ -276,14 +295,7 @@
         .service-card h4 {
             font-size: 14px;
             font-weight: 800;
-            text-transform: uppercase;
             margin-bottom: 10px;
-        }
-
-        .service-card p {
-            font-size: 11px;
-            color: var(--texto-gris);
-            margin-bottom: 15px;
         }
 
         .btn-outline {
@@ -294,83 +306,37 @@
             border-radius: 4px;
             font-size: 10px;
             font-weight: 800;
-            text-transform: uppercase;
             cursor: pointer;
             width: 100%;
-            transition: all 0.2s;
         }
 
-        .btn-outline:hover, .btn-outline.selected {
+        .btn-outline.selected {
             background-color: var(--rojo-racing);
             color: white;
         }
 
-        /* FOOTER / BENEFICIOS & UBICACIÓN */
-        .benefits-bar {
-            background-color: #08090B;
-            border-top: 1px solid var(--gris-borde);
-            padding: 30px 40px;
-            margin-top: 50px;
+        .my-turnos-list {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 15px;
         }
 
-        .benefits-grid {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 20px;
-            align-items: center;
-        }
-
-        .benefit-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .benefit-item i {
-            font-size: 24px;
-            color: var(--rojo-racing);
-        }
-
-        .benefit-info h5 {
-            font-size: 12px;
-            font-weight: 800;
-            text-transform: uppercase;
-        }
-
-        .benefit-info p {
-            font-size: 11px;
-            color: var(--texto-gris);
-        }
-
-        .btn-maps {
-            background-color: #1A1D22;
-            border: 1px solid var(--rojo-racing);
-            color: var(--texto-blanco);
-            padding: 8px 12px;
+        .turno-item {
+            background: var(--gris-input);
+            border: 1px solid var(--gris-borde);
             border-radius: 6px;
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            text-decoration: none;
-            display: inline-flex;
+            padding: 10px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 6px;
-            transition: background 0.2s;
-            margin-top: 5px;
+            font-size: 11px;
         }
 
-        .btn-maps:hover {
-            background-color: var(--rojo-racing);
-        }
-
-        /* RESPONSIVE */
         @media (max-width: 1024px) {
-            .hero { flex-direction: column; gap: 30px; text-align: center; }
-            .turno-card-unified { width: 100%; max-width: 480px; }
+            .hero { flex-direction: column; text-align: center; }
+            .card-container { width: 100%; }
             .services-grid { grid-template-columns: repeat(2, 1fr); }
-            .benefits-grid { grid-template-columns: repeat(2, 1fr); }
             header { flex-direction: column; gap: 15px; }
         }
     </style>
@@ -378,191 +344,185 @@
 <body>
 
     <header>
-        <a href="#inicio" class="logo-text">MAS <span>RACING</span></a>
+        <a href="#" class="logo-text">MAS <span>RACING</span></a>
         
         <nav>
-            <a href="#inicio" class="active">Inicio</a>
+            <a href="#inicio">Inicio</a>
             <a href="#servicios">Servicios</a>
-            <a href="#turnos">Turnos</a>
-            <a href="#contacto">Contacto</a>
+            <a href="#turnos">Agendar Turno</a>
         </nav>
-
-        <div class="sponsors">
-            <!-- Monster Energy SVG -->
-            <svg class="sponsor-svg" viewBox="0 0 100 100">
-                <path d="M19.3 83.2c1.8-14.8 6.5-46.7 10.3-66.4 0 0 7.8 2.6 11.2 5.2-3.2 16.1-8.1 48.7-9.5 64.1-3.8-1-8.5-2.1-12-2.9zm23.1 3.5c1.6-13 7.8-54.8 11.5-74.7 0 0 8.3 1.5 12.1 3.2-3.1 15.6-9.8 56.8-10.9 73.8-4.3-.7-8.8-1.5-12.7-2.3zm23.6 4.3c1.5-11.2 8.7-60.6 12-78.1 0 0 8.5.5 12.5 1.7-2.9 14.8-10.8 62.1-11.8 78.4-4.2-.6-8.7-1.3-12.7-2z" fill="#00FF66"/>
-            </svg>
-            <!-- Red Bull SVG -->
-            <svg class="sponsor-svg" viewBox="0 0 120 60">
-                <path d="M22 25c-5 0-9 4-9 9s4 9 9 9 9-4 9-9-4-9-9-9zm76 0c-5 0-9 4-9 9s4 9 9 9 9-4 9-9-4-9-9-9z" fill="#E52421"/>
-                <circle cx="60" cy="34" r="14" fill="#FFCC00"/>
-                <path d="M48 32l-18-8 12 14-16 2 20-3zm24 0l18-8-12 14 16 2-20-3z" fill="#E52421"/>
-            </svg>
-        </div>
     </header>
 
     <section class="hero" id="inicio">
         <div class="hero-text">
             <h1 class="hero-title">TU MOTO <span>EN LAS MEJORES MANOS</span></h1>
-            <p class="hero-subtitle">Servicio profesional para que disfrutes al máximo tu moto.</p>
-            
-            <div class="features-inline">
-                <div class="feature-item">
-                    <i class="fa-solid fa-screwdriver-wrench"></i>
-                    <span>Mecánicos Especializados</span>
-                </div>
-                <div class="feature-item">
-                    <i class="fa-solid fa-shield-halved"></i>
-                    <span>Repuestos de Calidad</span>
-                </div>
-                <div class="feature-item">
-                    <i class="fa-solid fa-microchip"></i>
-                    <span>Tecnología y Diagnóstico</span>
-                </div>
-            </div>
+            <p class="hero-subtitle">Mantenimiento profesional, repuestos de primera y registro de historial para descuentos exclusivos.</p>
         </div>
 
-        <div class="turno-card-unified" id="turnos">
-            <h3>RESERVÁ TU TURNO</h3>
-            <p class="sub">Ingresá los datos de tu moto y agendá tu visita</p>
+        <div class="card-container" id="turnos">
+            <div class="turno-card-unified">
+                
+                <!-- PESTAÑAS DE NAVEGACIÓN -->
+                <div class="tabs-header">
+                    <button class="tab-btn active" onclick="switchTab('tab-turno')"><i class="fa-regular fa-calendar-plus"></i> Turno</button>
+                    <button class="tab-btn" onclick="switchTab('tab-registro')"><i class="fa-solid fa-id-card"></i> Registro / DNI</button>
+                    <button class="tab-btn" onclick="switchTab('tab-cancelar')"><i class="fa-regular fa-calendar-xmark"></i> Mis Turnos</button>
+                </div>
 
-            <form id="quickTurno">
-                <div class="form-grid-2">
-                    <div class="form-group-sm full">
-                        <label><i class="fa-regular fa-user"></i> Tu Nombre</label>
-                        <input type="text" id="clienteNombre" placeholder="Ej: Juan Pérez" required>
+                <!-- PESTAÑA 1: SOLICITAR TURNO -->
+                <div id="tab-turno" class="tab-content active">
+                    <div id="clienteBox" class="profile-badge" style="display:none;">
+                        <p><strong id="badgeNombre">Juan Pérez</strong> (DNI: <span id="badgeDni"></span>)</p>
+                        <p>Trabajos realizados: <strong id="badgeTrabajos">0</strong></p>
+                        <div id="badgeDescuento" class="discount-tag" style="display:none;">¡Tenes 10% de Descuento por Cliente Frecuente!</div>
                     </div>
 
+                    <form id="formTurno">
+                        <div class="form-grid-2">
+                            <div class="form-group-sm full">
+                                <label>DNI del Cliente (Para verificar registro)</label>
+                                <input type="number" id="turnoDni" placeholder="Ingresá tu DNI" onchange="verificarDniAuto()" required>
+                            </div>
+
+                            <div class="form-group-sm">
+                                <label>MARCA DE MOTO</label>
+                                <select id="motoMarca">
+                                    <option value="Honda">Honda</option>
+                                    <option value="Yamaha">Yamaha</option>
+                                    <option value="Motomel">Motomel</option>
+                                    <option value="Corven">Corven</option>
+                                    <option value="Zanella">Zanella</option>
+                                    <option value="Otra">Otra Marca</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group-sm">
+                                <label>MODELO / CILINDRADA</label>
+                                <input type="text" id="motoModelo" placeholder="Ej: XR 150L" required>
+                            </div>
+
+                            <div class="form-group-sm">
+                                <label><i class="fa-regular fa-calendar"></i> FECHA</label>
+                                <input type="date" id="turnoFecha" onchange="actualizarHorariosDisponibles()" required>
+                            </div>
+
+                            <div class="form-group-sm">
+                                <label><i class="fa-regular fa-clock"></i> HORARIO DISPONIBLE</label>
+                                <select id="turnoHora" required>
+                                    <!-- Se cargan dinámicamente según la fecha -->
+                                </select>
+                            </div>
+
+                            <div class="form-group-sm full">
+                                <label><i class="fa-solid fa-box-open"></i> REPUESTOS</label>
+                                <select id="repuestosModo">
+                                    <option value="Se encarga el taller (Nosotros los conseguimos)">Se encarga el taller (Nosotros los conseguimos)</option>
+                                    <option value="Llevo mis propios repuestos">Llevo mis propios repuestos (Comprados por el cliente)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn-red" onclick="reservarYEnviarWhatsApp()">
+                            <i class="fa-regular fa-calendar-check"></i> AGENDAR Y RESERVAR TURNO
+                        </button>
+                    </form>
+                </div>
+
+                <!-- PESTAÑA 2: REGISTRO / MI PERFIL -->
+                <div id="tab-registro" class="tab-content">
+                    <h4 style="font-size:14px; margin-bottom:10px;">REGISTRATE PARA OBTENER DESCUENTOS</h4>
+                    <p style="font-size:11px; color:var(--texto-gris); margin-bottom:15px;">Guardamos el historial de services realizados en tu moto para otorgarte beneficios.</p>
+                    
+                    <form id="formRegistro">
+                        <div class="form-group-sm">
+                            <label>DNI</label>
+                            <input type="number" id="regDni" placeholder="Tu número de DNI" required>
+                        </div>
+                        <div class="form-group-sm">
+                            <label>Nombre y Apellido</label>
+                            <input type="text" id="regNombre" placeholder="Ej: Juan Pérez" required>
+                        </div>
+                        <div class="form-group-sm">
+                            <label>Teléfono (WhatsApp)</label>
+                            <input type="tel" id="regTelefono" placeholder="Ej: 3425688013" required>
+                        </div>
+                        <div class="form-group-sm">
+                            <label>Correo Electrónico</label>
+                            <input type="email" id="regEmail" placeholder="ejemplo@email.com" required>
+                        </div>
+                        
+                        <button type="button" class="btn-red" onclick="registrarCliente()">
+                            <i class="fa-solid fa-user-plus"></i> REGISTRARME COMO CLIENTE
+                        </button>
+                    </form>
+                </div>
+
+                <!-- PESTAÑA 3: MIS TURNOS / CANCELAR -->
+                <div id="tab-cancelar" class="tab-content">
+                    <h4 style="font-size:14px; margin-bottom:10px;">CONSULTAR O CANCELAR TURNO</h4>
                     <div class="form-group-sm">
-                        <label>MARCA</label>
-                        <select id="motoMarca">
-                            <option value="Honda">Honda</option>
-                            <option value="Yamaha">Yamaha</option>
-                            <option value="Motomel">Motomel</option>
-                            <option value="Corven">Corven</option>
-                            <option value="Zanella">Zanella</option>
-                            <option value="Otra">Otra Marca</option>
-                        </select>
+                        <label>Ingresá tu DNI para ver tus turnos agendados</label>
+                        <input type="number" id="buscarDni" placeholder="Tu DNI">
                     </div>
+                    <button type="button" class="btn-red" onclick="buscarTurnosCliente()">BUSCAR MIS TURNOS</button>
 
-                    <div class="form-group-sm">
-                        <label>MODELO / CILINDRADA</label>
-                        <input type="text" id="motoModelo" placeholder="Ej: XR 150L" required>
-                    </div>
-
-                    <div class="form-group-sm">
-                        <label><i class="fa-regular fa-calendar"></i> FECHA</label>
-                        <input type="date" id="turnoFecha" required>
-                    </div>
-
-                    <div class="form-group-sm">
-                        <label><i class="fa-regular fa-clock"></i> HORARIO</label>
-                        <select id="turnoHora" required>
-                            <option value="09:00 HS">09:00 HS</option>
-                            <option value="11:00 HS">11:00 HS</option>
-                            <option value="15:00 HS">15:00 HS</option>
-                            <option value="17:00 HS">17:00 HS</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group-sm full">
-                        <label><i class="fa-solid fa-box-open"></i> PROVISIÓN DE REPUESTOS</label>
-                        <select id="repuestosModo">
-                            <option value="Se encarga el taller (Nosotros los conseguimos)">Se encarga el taller (Nosotros los conseguimos)</option>
-                            <option value="Llevo mis propios repuestos">Llevo mis propios repuestos (Comprados por el cliente)</option>
-                        </select>
+                    <div class="my-turnos-list" id="listaMisTurnos">
+                        <!-- Se llena vía JavaScript -->
                     </div>
                 </div>
 
-                <button type="button" class="btn-red" onclick="solicitarTurnoDirecto()">
-                    <i class="fa-regular fa-calendar-check"></i> AGENDAR TURNO POR WHATSAPP
-                </button>
-            </form>
+            </div>
         </div>
     </section>
 
+    <!-- SECCIÓN DE SERVICIOS -->
     <section class="main-section" id="servicios">
-        <h2 class="section-title">ELEGÍ EL SERVICIO QUE NECESITÁS</h2>
+        <h2 class="section-title">SERVICIOS DISPONIBLES</h2>
         <div class="services-grid">
             <div class="service-card">
                 <i class="fa-solid fa-wrench"></i>
                 <h4>SERVICE</h4>
-                <p>Cambio de aceite, filtros, bujías, puesta a punto y más.</p>
                 <button class="btn-outline" onclick="seleccionarServicio(this, 'Service Completo')">SELECCIONAR</button>
             </div>
             <div class="service-card">
                 <i class="fa-solid fa-circle-dot"></i>
                 <h4>FRENOS</h4>
-                <p>Revisión, reparación y mantenimiento del sistema de frenos.</p>
                 <button class="btn-outline" onclick="seleccionarServicio(this, 'Frenos')">SELECCIONAR</button>
             </div>
             <div class="service-card">
                 <i class="fa-solid fa-link"></i>
                 <h4>TRANSMISIÓN</h4>
-                <p>Mantenimiento de cadena, corona, piñón y kit completo.</p>
                 <button class="btn-outline" onclick="seleccionarServicio(this, 'Transmisión')">SELECCIONAR</button>
             </div>
             <div class="service-card">
                 <i class="fa-solid fa-arrows-up-down"></i>
                 <h4>AMORTIGUACIÓN</h4>
-                <p>Revisión y servicio de suspensión delantera y trasera.</p>
                 <button class="btn-outline" onclick="seleccionarServicio(this, 'Amortiguación')">SELECCIONAR</button>
             </div>
             <div class="service-card">
                 <i class="fa-solid fa-clipboard-check"></i>
                 <h4>DIAGNÓSTICO</h4>
-                <p>Escaneo electrónico, fallas y testeo completo de tu moto.</p>
                 <button class="btn-outline" onclick="seleccionarServicio(this, 'Diagnóstico')">SELECCIONAR</button>
             </div>
         </div>
     </section>
 
-    <div class="benefits-bar" id="contacto">
-        <div class="benefits-grid">
-            <div class="benefit-item">
-                <i class="fa-solid fa-location-dot"></i>
-                <div class="benefit-info">
-                    <h5>UBICACIÓN</h5>
-                    <p>Av. Luján 4156, Santo Tomé</p>
-                    <a href="https://maps.app.goo.gl/iBWNATXhKhPDkS2x8" target="_blank" class="btn-maps">
-                        <i class="fa-solid fa-map-location-dot"></i> Cómo Llegar
-                    </a>
-                </div>
-            </div>
-            <div class="benefit-item">
-                <i class="fa-solid fa-headset"></i>
-                <div class="benefit-info">
-                    <h5>ATENCIÓN</h5>
-                    <p>Asesoramiento a medida</p>
-                </div>
-            </div>
-            <div class="benefit-item">
-                <i class="fa-solid fa-shield"></i>
-                <div class="benefit-info">
-                    <h5>GARANTÍA</h5>
-                    <p>Calidad y respaldo</p>
-                </div>
-            </div>
-            <div class="benefit-item">
-                <i class="fa-solid fa-stopwatch"></i>
-                <div class="benefit-info">
-                    <h5>EFICIENCIA</h5>
-                    <p>Tu tiempo importa</p>
-                </div>
-            </div>
-            <div class="benefit-item">
-                <i class="fa-solid fa-heart"></i>
-                <div class="benefit-info">
-                    <h5>PASIÓN</h5>
-                    <p>Somos motociclistas</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
         const NUMERO_WHATSAPP = "5493425688013";
-        let servicioSeleccionado = "General / Service";
+        const HORARIOS_DISPONIBLES = ["09:00 HS", "11:00 HS", "15:00 HS", "17:00 HS"];
+        
+        let servicioSeleccionado = "Service Completo";
+        let clientesBD = JSON.parse(localStorage.getItem('masracing_clientes')) || {};
+        let turnosBD = JSON.parse(localStorage.getItem('masracing_turnos')) || [];
+
+        // Cambio de pestañas
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            event.currentTarget.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
 
         function seleccionarServicio(btn, servicio) {
             document.querySelectorAll('.btn-outline').forEach(b => b.classList.remove('selected'));
@@ -570,31 +530,197 @@
             servicioSeleccionado = servicio;
         }
 
-        function solicitarTurnoDirecto() {
-            const nombre = document.getElementById("clienteNombre").value || "Cliente";
-            const fecha = document.getElementById("turnoFecha").value;
-            const hora = document.getElementById("turnoHora").value;
-            const marca = document.getElementById("motoMarca").value;
-            const modelo = document.getElementById("motoModelo").value || "No especificado";
-            const repuestos = document.getElementById("repuestosModo").value;
+        // REGISTRO DE CLIENTES (DNI, Tel, Mail)
+        function registrarCliente() {
+            const dni = document.getElementById('regDni').value.trim();
+            const nombre = document.getElementById('regNombre').value.trim();
+            const telefono = document.getElementById('regTelefono').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
 
-            if (!fecha) {
-                alert("Por favor elegí una fecha para tu turno.");
+            if (!dni || !nombre || !telefono || !email) {
+                alert("Por favor completá todos los campos para registrarte.");
                 return;
             }
 
-            const mensaje = `Hola *MAS RACING*! Quisiera agendar un turno:%0A%0A` +
-                            `👤 *Cliente:* ${nombre}%0A` +
+            clientesBD[dni] = {
+                nombre: nombre,
+                telefono: telefono,
+                email: email,
+                trabajosRealizados: clientesBD[dni] ? clientesBD[dni].trabajosRealizados : 0
+            };
+
+            localStorage.setItem('masracing_clientes', JSON.stringify(clientesBD));
+            alert("¡Registro exitoso! Ya podés solicitar tus turnos con tu DNI.");
+            
+            // Auto-completar en el turno
+            document.getElementById('turnoDni').value = dni;
+            verificarDniAuto();
+            switchTab('tab-turno');
+        }
+
+        // VERIFICAR DNI Y APLICAR DESCUENTOS
+        function verificarDniAuto() {
+            const dni = document.getElementById('turnoDni').value.trim();
+            const badge = document.getElementById('clienteBox');
+
+            if (clientesBD[dni]) {
+                const cliente = clientesBD[dni];
+                document.getElementById('badgeNombre').innerText = cliente.nombre;
+                document.getElementById('badgeDni').innerText = dni;
+                document.getElementById('badgeTrabajos').innerText = cliente.trabajosRealizados;
+                
+                // Aplicar descuento si tiene 3 o más trabajos acumulados
+                if (cliente.trabajosRealizados >= 3) {
+                    document.getElementById('badgeDescuento').style.display = "inline-block";
+                } else {
+                    document.getElementById('badgeDescuento').style.display = "none";
+                }
+
+                badge.style.display = "block";
+            } else {
+                badge.style.display = "none";
+            }
+        }
+
+        // FILTRAR HORARIOS BLOQUEADOS
+        function actualizarHorariosDisponibles() {
+            const fecha = document.getElementById('turnoFecha').value;
+            const selectHora = document.getElementById('turnoHora');
+            selectHora.innerHTML = "";
+
+            if (!fecha) return;
+
+            // Buscar horarios ocupados en esa fecha
+            const ocupados = turnosBD
+                .filter(t => t.fecha === fecha && t.estado === "AGENDADO")
+                .map(t => t.hora);
+
+            HORARIOS_DISPONIBLES.forEach(hora => {
+                const option = document.createElement("option");
+                option.value = hora;
+                if (ocupados.includes(hora)) {
+                    option.text = `${hora} - (NO DISPONIBLE / RESERVADO)`;
+                    option.disabled = true;
+                } else {
+                    option.text = hora;
+                }
+                selectHora.appendChild(option);
+            });
+        }
+
+        // AGENDAR Y BLOQUEAR TURNO
+        function reservarYEnviarWhatsApp() {
+            const dni = document.getElementById('turnoDni').value.trim();
+            const fecha = document.getElementById('turnoFecha').value;
+            const hora = document.getElementById('turnoHora').value;
+            const marca = document.getElementById('motoMarca').value;
+            const modelo = document.getElementById('motoModelo').value || "No especificado";
+            const repuestos = document.getElementById('repuestosModo').value;
+
+            if (!dni) {
+                alert("Por favor ingresá tu DNI o registrate en la pestaña 'Registro'.");
+                return;
+            }
+
+            if (!clientesBD[dni]) {
+                alert("Este DNI no está registrado. Por favor registrate antes en la pestaña 'Registro / DNI'.");
+                switchTab('tab-registro');
+                document.getElementById('regDni').value = dni;
+                return;
+            }
+
+            if (!fecha || !hora) {
+                alert("Elegí una fecha y horario válidos.");
+                return;
+            }
+
+            // Guardar turno en la base de datos local
+            const nuevoTurno = {
+                id: Date.now(),
+                dni: dni,
+                clienteNombre: clientesBD[dni].nombre,
+                fecha: fecha,
+                hora: hora,
+                marca: marca,
+                modelo: modelo,
+                servicio: servicioSeleccionado,
+                repuestos: repuestos,
+                estado: "AGENDADO"
+            };
+
+            turnosBD.push(nuevoTurno);
+            
+            // Incrementar historial de trabajos del cliente
+            clientesBD[dni].trabajosRealizados += 1;
+
+            // Guardar cambios
+            localStorage.setItem('masracing_turnos', JSON.stringify(turnosBD));
+            localStorage.setItem('masracing_clientes', JSON.stringify(clientesBD));
+
+            // Notificación e integración con WhatsApp
+            const mensaje = `Hola *MAS RACING*! Confirmación de Turno Reservado:%0A%0A` +
+                            `👤 *Cliente:* ${clientesBD[dni].nombre} (DNI: ${dni})%0A` +
                             `🏍️ *Moto:* ${marca} ${modelo}%0A` +
                             `🛠️ *Servicio:* ${servicioSeleccionado}%0A` +
                             `📦 *Repuestos:* ${repuestos}%0A` +
                             `📅 *Fecha:* ${fecha}%0A` +
                             `⏰ *Hora:* ${hora}%0A%0A` +
-                            `¿Tienen disponibilidad para confirmar?`;
+                            `*Turno bloqueado en el sistema.* ¡Nos vemos ese día!`;
 
+            alert("¡Turno reservado exitosamente! Ya quedó bloqueado para otros clientes.");
+            actualizarHorariosDisponibles();
             window.open(`https://wa.me/${NUMERO_WHATSAPP}?text=${mensaje}`, '_blank');
         }
 
+        // CANCELAR TURNO
+        function buscarTurnosCliente() {
+            const dni = document.getElementById('buscarDni').value.trim();
+            const contenedor = document.getElementById('listaMisTurnos');
+            contenedor.innerHTML = "";
+
+            if (!dni) {
+                alert("Ingresá tu DNI para buscar tus turnos.");
+                return;
+            }
+
+            const misTurnos = turnosBD.filter(t => t.dni === dni && t.estado === "AGENDADO");
+
+            if (misTurnos.length === 0) {
+                contenedor.innerHTML = "<p style='font-size:12px; color:var(--texto-gris); margin-top:10px;'>No tenés turnos vigentes agendados.</p>";
+                return;
+            }
+
+            misTurnos.forEach(t => {
+                const item = document.createElement('div');
+                item.className = 'turno-item';
+                item.innerHTML = `
+                    <div>
+                        <strong>${t.fecha} - ${t.hora}</strong><br>
+                        <span>${t.servicio} (${t.marca} ${t.modelo})</span>
+                    </div>
+                    <button class="btn-red btn-cancel" style="width:auto; padding:6px 10px;" onclick="cancelarTurno(${t.id})">
+                        Cancelar
+                    </button>
+                `;
+                contenedor.appendChild(item);
+            });
+        }
+
+        function cancelarTurno(turnoId) {
+            if (confirm("¿Estás seguro de que querés cancelar este turno? Se liberará el horario inmediatamente.")) {
+                turnosBD = turnosBD.map(t => {
+                    if (t.id === turnoId) t.estado = "CANCELADO";
+                    return t;
+                });
+
+                localStorage.setItem('masracing_turnos', JSON.stringify(turnosBD));
+                alert("Tu turno ha sido cancelado y el horario quedó disponible nuevamente.");
+                buscarTurnosCliente();
+                actualizarHorariosDisponibles();
+            }
+        }
+
+        // Inicialización
         document.getElementById('turnoFecha').min = new Date().toISOString().split("T")[0];
     </script>
 </body>
