@@ -3,70 +3,166 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sponsor Logos</title>
+  <title>MAS RACING - Motomecánica</title>
   <style>
-    body {
-      background-color: #0f0f11;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
+    :root {
+      --primary: #ff3333;
+      --bg-dark: rgba(15, 15, 17, 0.85);
+      --card-bg: #1a1a1e;
+      --text: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
       margin: 0;
-      font-family: sans-serif;
+      padding: 0;
     }
 
-    .brand-container {
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--text);
+      /* Foto de la moto de fondo */
+      background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.85)), url('moto-fondo.jpg') no-repeat center center fixed;
+      background-size: cover;
+      min-height: 100vh;
       display: flex;
-      gap: 40px;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      flex-wrap: wrap;
-      padding: 20px;
     }
 
-    .brand-card {
-      background: #1a1a1e;
+    header {
+      width: 100%;
+      padding: 20px;
+      text-align: center;
+      background: rgba(10, 10, 12, 0.9);
+      border-bottom: 2px solid var(--primary);
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      letter-spacing: 2px;
+      color: #fff;
+      text-transform: uppercase;
+    }
+
+    .container {
+      max-width: 900px;
+      width: 90%;
+      margin: 40px auto;
+      background: var(--bg-dark);
+      padding: 30px;
+      border-radius: 16px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    }
+
+    /* Sección de Sponsors / Marcas */
+    .sponsors-section {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .sponsors-title {
+      font-size: 1.2rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+      color: #ccc;
+    }
+
+    .sponsors-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+
+    .sponsor-card {
+      background: var(--card-bg);
       border: 1px solid #2a2a30;
       border-radius: 12px;
-      padding: 24px;
+      padding: 15px 25px;
       display: flex;
       align-items: center;
       justify-content: center;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-    .brand-card:hover {
+    .sponsor-card:hover {
       transform: translateY(-5px);
     }
 
-    .brand-card.monster:hover {
-      box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+    .sponsor-card.monster:hover {
+      box-shadow: 0 0 15px rgba(0, 255, 0, 0.4);
       border-color: #00ff00;
     }
 
-    .brand-card.redbull:hover {
-      box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+    .sponsor-card.redbull:hover {
+      box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
       border-color: #ff0000;
     }
 
-    .brand-logo {
-      height: 100px;
+    /* Tamaño de los logos PNG */
+    .sponsor-logo {
+      height: 70px;
       width: auto;
       object-fit: contain;
-      filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.5));
+      filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.6));
+    }
+
+    /* Botón principal de WhatsApp */
+    .btn-whatsapp {
+      display: block;
+      width: 100%;
+      max-width: 300px;
+      margin: 30px auto 0;
+      padding: 15px;
+      background-color: #25d366;
+      color: #fff;
+      text-align: center;
+      text-decoration: none;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border-radius: 8px;
+      transition: background 0.3s ease;
+    }
+
+    .btn-whatsapp:hover {
+      background-color: #1eb954;
     }
   </style>
 </head>
 <body>
 
-  <div class="brand-container">
-    <div class="brand-card monster">
-      <img src="./monster.png" alt="Monster Energy" class="brand-logo">
+  <header>
+    <h1>MAS RACING</h1>
+    <p>Motomecánica & Service</p>
+  </header>
+
+  <div class="container">
+    
+    <!-- Sección de Sponsors -->
+    <div class="sponsors-section">
+      <h2 class="sponsors-title">Sponsors Oficiales</h2>
+      <div class="sponsors-container">
+        
+        <!-- Logo Monster -->
+        <div class="sponsor-card monster">
+          <img src="monster.png" alt="Monster Energy" class="sponsor-logo">
+        </div>
+
+        <!-- Logo Red Bull -->
+        <div class="sponsor-card redbull">
+          <img src="redbull.png" alt="Red Bull" class="sponsor-logo">
+        </div>
+
+      </div>
     </div>
 
-    <div class="brand-card redbull">
-      <img src="./redbull.png" alt="Red Bull" class="brand-logo">
-    </div>
+    <!-- Botón Turnos / Contacto -->
+    <a href="https://wa.me/5493425688013" class="btn-whatsapp" target="_blank">Agendar Turno por WhatsApp</a>
+
   </div>
 
 </body>
