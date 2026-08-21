@@ -463,7 +463,7 @@
                     <button class="tab-btn active" id="btn-tab-registro" onclick="switchTab('tab-registro')"><i class="fa-solid fa-id-card"></i> 1. Registro</button>
                     <button class="tab-btn" id="btn-tab-turno" onclick="switchTab('tab-turno')"><i class="fa-regular fa-calendar-plus"></i> 2. Pedir Turno</button>
                     <button class="tab-btn" id="btn-tab-cancelar" onclick="switchTab('tab-cancelar')"><i class="fa-regular fa-calendar-xmark"></i> 3. Mis Turnos</button>
-                    <button class="tab-btn" id="btn-tab-perfil" onclick="switchTab('tab-perfil')"><i class="fa-solid fa-motorcycle"></i> 4. Mi Perfil</button>
+                    <button class="tab-btn" id="btn-tab-perfil" onclick="switchTab('tab-perfil')"><i class="fa-solid fa-motorcycle"></i> 4. Panel Taller</button>
                 </div>
 
                 <!-- PESTAÑA 1: REGISTRO / MI PERFIL (PRIMERA) -->
@@ -579,20 +579,81 @@
                     </div>
                 </div>
 
-                <!-- PESTAÑA 4: MI PERFIL / HISTORIAL DE LA MOTO (CUARTA) -->
+                <!-- PESTAÑA 4: PANEL DEL TALLER (CUARTA) -->
                 <div id="tab-perfil" class="tab-content">
-                    <h4 style="font-size:14px; margin-bottom:8px;">HISTORIAL DE TU MOTO</h4>
-                    <p style="font-size:11px; color:var(--texto-gris); margin-bottom:15px;">Ingresá tu DNI para ver cada trabajo que le hicimos a tu moto y cuándo te conviene el próximo service.</p>
 
-                    <div class="form-group-sm">
-                        <label>DNI</label>
-                        <input type="number" id="perfilDni" placeholder="Tu DNI">
+                    <div id="tallerLogin">
+                        <h4 style="font-size:14px; margin-bottom:8px;">PANEL DEL TALLER</h4>
+                        <p style="font-size:11px; color:var(--texto-gris); margin-bottom:15px;">Acceso solo para MAS RACING. Ingresá la clave para cargar el trabajo hecho en el historial de un cliente.</p>
+                        <div class="form-group-sm">
+                            <label>Clave de acceso</label>
+                            <input type="password" id="tallerClave" placeholder="Clave del taller">
+                        </div>
+                        <button type="button" class="btn-red" onclick="ingresarPanelTaller()">INGRESAR</button>
                     </div>
-                    <button type="button" class="btn-red" onclick="verPerfilCompleto()">
-                        <i class="fa-solid fa-clock-rotate-left"></i> VER MI HISTORIAL
-                    </button>
 
-                    <div id="perfilResultado" style="margin-top:15px;"></div>
+                    <div id="tallerPanel" style="display:none;">
+                        <h4 style="font-size:14px; margin-bottom:8px;">CARGAR TRABAJO REALIZADO</h4>
+                        <p style="font-size:11px; color:var(--texto-gris); margin-bottom:15px;">Buscá al cliente por DNI y registrá qué se le hizo a la moto ese día.</p>
+
+                        <div class="form-grid-2">
+                            <div class="form-group-sm full">
+                                <label>DNI del Cliente</label>
+                                <input type="number" id="tallerDni" placeholder="DNI del cliente" onchange="buscarClienteTaller()">
+                            </div>
+
+                            <div class="form-group-sm full" id="tallerClienteInfo" style="display:none;">
+                                <div class="profile-badge" style="margin-bottom:0;">
+                                    <p><strong id="tallerClienteNombre"></strong></p>
+                                    <p style="font-size:10px; color:var(--texto-gris);">Trabajos previos: <strong id="tallerClienteTrabajos">0</strong></p>
+                                </div>
+                            </div>
+
+                            <div class="form-group-sm full" id="tallerNombreNuevoBox" style="display:none;">
+                                <label>Cliente no encontrado — cargá su nombre</label>
+                                <input type="text" id="tallerNombreNuevo" placeholder="Nombre y Apellido">
+                            </div>
+
+                            <div class="form-group-sm">
+                                <label>FECHA DEL TRABAJO</label>
+                                <input type="date" id="tallerFecha">
+                            </div>
+                            <div class="form-group-sm">
+                                <label>KILOMETRAJE</label>
+                                <input type="number" id="tallerKm" placeholder="Ej: 14200" min="0">
+                            </div>
+                            <div class="form-group-sm">
+                                <label>MARCA</label>
+                                <input type="text" id="tallerMarca" placeholder="Ej: Honda">
+                            </div>
+                            <div class="form-group-sm">
+                                <label>MODELO</label>
+                                <input type="text" id="tallerModelo" placeholder="Ej: XR 150L">
+                            </div>
+                            <div class="form-group-sm full">
+                                <label>TRABAJO REALIZADO</label>
+                                <select id="tallerServicio">
+                                    <option value="Service Completo">Service Completo</option>
+                                    <option value="Frenos">Frenos</option>
+                                    <option value="Transmisión">Transmisión</option>
+                                    <option value="Amortiguación">Amortiguación</option>
+                                    <option value="Diagnóstico">Diagnóstico</option>
+                                    <option value="Otro">Otro (especificar en notas)</option>
+                                </select>
+                            </div>
+                            <div class="form-group-sm full">
+                                <label>NOTAS (OPCIONAL)</label>
+                                <input type="text" id="tallerNotas" placeholder="Detalles, repuestos usados, etc.">
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn-red" onclick="guardarTrabajoTaller()">
+                            <i class="fa-solid fa-floppy-disk"></i> GUARDAR EN EL HISTORIAL
+                        </button>
+
+                        <h4 style="font-size:13px; margin:20px 0 8px;">HISTORIAL DE ESTE CLIENTE</h4>
+                        <div id="tallerHistorial"></div>
+                    </div>
                 </div>
 
             </div>
@@ -696,6 +757,14 @@
             if(selectedBtn) selectedBtn.classList.add('active');
             
             document.getElementById(tabId).classList.add('active');
+
+            if (tabId === 'tab-perfil' && sessionStorage.getItem('taller_autenticado') === 'true') {
+                document.getElementById('tallerLogin').style.display = 'none';
+                document.getElementById('tallerPanel').style.display = 'block';
+                if (!document.getElementById('tallerFecha').value) {
+                    document.getElementById('tallerFecha').value = new Date().toISOString().split('T')[0];
+                }
+            }
         }
 
         function seleccionarServicio(btn, servicio) {
@@ -941,77 +1010,142 @@
             }
         }
 
-        // MI PERFIL: HISTORIAL COMPLETO DE LA MOTO + PRÓXIMO SERVICE SUGERIDO
-        function verPerfilCompleto() {
-            const dni = document.getElementById('perfilDni').value.trim();
-            const contenedor = document.getElementById('perfilResultado');
-            contenedor.innerHTML = "";
+        // PANEL DEL TALLER: acceso con clave
+        const CLAVE_TALLER = "masracing2026"; // cambiá esta clave por la que prefieras
 
-            if (!dni) {
-                alert("Ingresá tu DNI para ver tu historial.");
+        function ingresarPanelTaller() {
+            const clave = document.getElementById('tallerClave').value;
+            if (clave === CLAVE_TALLER) {
+                sessionStorage.setItem('taller_autenticado', 'true');
+                document.getElementById('tallerLogin').style.display = 'none';
+                document.getElementById('tallerPanel').style.display = 'block';
+                document.getElementById('tallerFecha').value = new Date().toISOString().split('T')[0];
+            } else {
+                alert('Clave incorrecta.');
+            }
+        }
+
+        // Buscar cliente por DNI y mostrar su info + historial
+        function buscarClienteTaller() {
+            const dni = document.getElementById('tallerDni').value.trim();
+            const infoBox = document.getElementById('tallerClienteInfo');
+            const nuevoBox = document.getElementById('tallerNombreNuevoBox');
+
+            if (!dni) return;
+
+            if (clientesBD[dni]) {
+                document.getElementById('tallerClienteNombre').innerText = clientesBD[dni].nombre;
+                document.getElementById('tallerClienteTrabajos').innerText = clientesBD[dni].trabajosRealizados;
+                infoBox.style.display = 'block';
+                nuevoBox.style.display = 'none';
+            } else {
+                infoBox.style.display = 'none';
+                nuevoBox.style.display = 'block';
+            }
+
+            renderHistorialTaller(dni);
+        }
+
+        // Guardar el trabajo realizado en el historial del cliente
+        function guardarTrabajoTaller() {
+            const dni = document.getElementById('tallerDni').value.trim();
+            const fecha = document.getElementById('tallerFecha').value;
+            const km = document.getElementById('tallerKm').value.trim();
+            const marca = document.getElementById('tallerMarca').value.trim();
+            const modelo = document.getElementById('tallerModelo').value.trim();
+            const servicio = document.getElementById('tallerServicio').value;
+            const notas = document.getElementById('tallerNotas').value.trim();
+
+            if (!dni || !fecha || !marca || !modelo) {
+                alert('Completá al menos DNI, fecha, marca y modelo.');
                 return;
             }
 
             if (!clientesBD[dni]) {
-                contenedor.innerHTML = "<p style='font-size:12px; color:var(--texto-gris); margin-top:10px;'>No encontramos ese DNI. Registrate primero en la pestaña '1. Registro'.</p>";
+                const nombreNuevo = document.getElementById('tallerNombreNuevo').value.trim();
+                if (!nombreNuevo) {
+                    alert('Este DNI no está registrado. Cargá el nombre del cliente para crear su ficha.');
+                    return;
+                }
+                clientesBD[dni] = {
+                    nombre: nombreNuevo,
+                    telefono: '',
+                    email: '',
+                    trabajosRealizados: 0,
+                    historialServicios: []
+                };
+            }
+
+            if (!clientesBD[dni].historialServicios) {
+                clientesBD[dni].historialServicios = [];
+            }
+
+            clientesBD[dni].historialServicios.push({
+                fecha: fecha,
+                hora: '',
+                servicio: servicio + (notas ? ' — ' + notas : ''),
+                moto: `${marca} ${modelo}`,
+                km: km || null
+            });
+            clientesBD[dni].trabajosRealizados += 1;
+
+            localStorage.setItem('masracing_clientes', JSON.stringify(clientesBD));
+
+            alert('Trabajo guardado en el historial del cliente.');
+
+            // Limpio solo los campos del trabajo, mantengo el DNI cargado
+            document.getElementById('tallerKm').value = '';
+            document.getElementById('tallerNotas').value = '';
+
+            buscarClienteTaller();
+        }
+
+        // Renderiza el historial completo + próximo service sugerido
+        function renderHistorialTaller(dni) {
+            const contenedor = document.getElementById('tallerHistorial');
+            contenedor.innerHTML = '';
+
+            if (!clientesBD[dni]) {
+                contenedor.innerHTML = "<p style='font-size:12px; color:var(--texto-gris);'>Cliente nuevo, todavía sin historial.</p>";
                 return;
             }
 
-            const cliente = clientesBD[dni];
-            const historial = (cliente.historialServicios || []).slice(); // copia, sin modificar el original
-
-            // Encabezado con datos del cliente
-            let html = `
-                <div class="profile-badge">
-                    <p><strong>${cliente.nombre}</strong> (DNI: ${dni})</p>
-                    <p>Total de trabajos realizados: <strong>${cliente.trabajosRealizados}</strong></p>
-                    ${cliente.trabajosRealizados >= 3 ? '<div class="discount-tag">¡Tenés 10% de Descuento por Cliente Frecuente!</div>' : ''}
-                </div>
-            `;
+            const historial = (clientesBD[dni].historialServicios || []).slice();
 
             // Próximo service sugerido, en base al último km registrado
-            const historialConKm = historial.filter(h => h.km);
-            if (historialConKm.length > 0) {
-                const ultimo = historialConKm[historialConKm.length - 1];
+            const conKm = historial.filter(h => h.km);
+            if (conKm.length > 0) {
+                const ultimo = conKm[conKm.length - 1];
                 const proximoKm = parseInt(ultimo.km) + INTERVALO_SERVICE_KM;
-                html += `
+                contenedor.innerHTML += `
                     <div class="profile-badge" style="border-color: var(--verde-exito);">
                         <p style="font-size:10px; color:var(--texto-gris);">PRÓXIMO SERVICE SUGERIDO</p>
                         <p><strong style="color: var(--verde-exito);">Alrededor de los ${proximoKm.toLocaleString('es-AR')} km</strong></p>
                         <p style="font-size:10px; color:var(--texto-gris); margin-top:4px;">
-                            (Último registro: ${ultimo.servicio} a los ${parseInt(ultimo.km).toLocaleString('es-AR')} km, el ${ultimo.fecha}. Estimado cada ${INTERVALO_SERVICE_KM} km, puede variar según el trabajo realizado.)
+                            (Último registro: ${ultimo.servicio} a los ${parseInt(ultimo.km).toLocaleString('es-AR')} km, el ${ultimo.fecha}. Estimado cada ${INTERVALO_SERVICE_KM} km.)
                         </p>
                     </div>
                 `;
-            } else {
-                html += `
-                    <div class="profile-badge" style="border-color: var(--gris-borde);">
-                        <p style="font-size:11px; color:var(--texto-gris);">Todavía no registramos el kilometraje de tu moto. La próxima vez que pidas un turno, contanos los km para poder avisarte cuándo te toca el próximo service.</p>
-                    </div>
-                `;
             }
-
-            // Historial completo, del más reciente al más viejo
-            html += `<h4 style="font-size:13px; margin:15px 0 8px;">REGISTRO DE TRABAJOS</h4>`;
 
             if (historial.length === 0) {
-                html += `<p style="font-size:12px; color:var(--texto-gris);">Todavía no tenés trabajos registrados.</p>`;
-            } else {
-                html += `<div class="my-turnos-list" style="max-height: 250px;">`;
-                historial.slice().reverse().forEach(h => {
-                    html += `
-                        <div class="turno-item" style="align-items:flex-start;">
-                            <div>
-                                <strong>${h.fecha}</strong> — ${h.servicio}<br>
-                                <span style="color:var(--texto-gris);">${h.moto}${h.km ? ' · ' + parseInt(h.km).toLocaleString('es-AR') + ' km' : ''}</span>
-                            </div>
-                        </div>
-                    `;
-                });
-                html += `</div>`;
+                contenedor.innerHTML += "<p style='font-size:12px; color:var(--texto-gris);'>Sin trabajos registrados todavía.</p>";
+                return;
             }
 
-            contenedor.innerHTML = html;
+            let html = `<div class="my-turnos-list" style="max-height:220px;">`;
+            historial.slice().reverse().forEach(h => {
+                html += `
+                    <div class="turno-item" style="align-items:flex-start;">
+                        <div>
+                            <strong>${h.fecha}</strong> — ${h.servicio}<br>
+                            <span style="color:var(--texto-gris);">${h.moto}${h.km ? ' · ' + parseInt(h.km).toLocaleString('es-AR') + ' km' : ''}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            contenedor.innerHTML += html;
         }
 
         // Inicialización
