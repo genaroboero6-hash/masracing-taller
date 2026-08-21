@@ -500,6 +500,12 @@
                         <p><strong id="badgeNombre">Juan Pérez</strong> (DNI: <span id="badgeDni"></span>)</p>
                         <p>Trabajos realizados: <strong id="badgeTrabajos">0</strong></p>
                         <div id="badgeDescuento" class="discount-tag" style="display:none;">¡Tenés 10% de Descuento por Cliente Frecuente!</div>
+                        <p id="badgeHistorial" style="font-size:10px; color:var(--texto-gris); margin-top:8px; line-height:1.6;"></p>
+                    </div>
+
+                    <div class="profile-badge" id="servicioBox" style="border-color: var(--gris-borde);">
+                        <p style="font-size:10px; color:var(--texto-gris); margin-bottom:2px;">SERVICIO SELECCIONADO:</p>
+                        <p><strong id="servicioSeleccionadoTexto" style="color: var(--rojo-racing);">Ninguno todavía — elegí uno en "Servicios Disponibles" ⬇️</strong></p>
                     </div>
 
                     <form id="formTurno">
@@ -654,7 +660,7 @@
         const NUMERO_WHATSAPP = "5493425688013";
         const HORARIOS_DISPONIBLES = ["09:00 HS", "11:00 HS", "15:00 HS", "17:00 HS"];
         
-        let servicioSeleccionado = "Service Completo";
+        let servicioSeleccionado = null;
         let clientesBD = JSON.parse(localStorage.getItem('masracing_clientes')) || {};
         let turnosBD = JSON.parse(localStorage.getItem('masracing_turnos')) || [];
 
@@ -673,6 +679,12 @@
             document.querySelectorAll('.btn-outline').forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
             servicioSeleccionado = servicio;
+
+            const texto = document.getElementById('servicioSeleccionadoTexto');
+            if (texto) {
+                texto.innerText = "✅ " + servicio;
+                texto.style.color = "var(--verde-exito)";
+            }
         }
 
         // REGISTRO DE CLIENTES (DNI, Tel, Mail)
@@ -691,7 +703,8 @@
                 nombre: nombre,
                 telefono: telefono,
                 email: email,
-                trabajosRealizados: clientesBD[dni] ? clientesBD[dni].trabajosRealizados : 0
+                trabajosRealizados: clientesBD[dni] ? clientesBD[dni].trabajosRealizados : 0,
+                historialServicios: clientesBD[dni] ? (clientesBD[dni].historialServicios || []) : []
             };
 
             localStorage.setItem('masracing_clientes', JSON.stringify(clientesBD));
@@ -719,6 +732,18 @@
                     document.getElementById('badgeDescuento').style.display = "inline-block";
                 } else {
                     document.getElementById('badgeDescuento').style.display = "none";
+                }
+
+                // Mostrar los últimos servicios realizados a la moto
+                const historial = cliente.historialServicios || [];
+                const cajaHistorial = document.getElementById('badgeHistorial');
+                if (historial.length > 0) {
+                    cajaHistorial.innerHTML = "<strong style='color:var(--texto-blanco);'>ÚLTIMOS SERVICIOS:</strong><br>" +
+                        historial.slice(-3).reverse()
+                            .map(h => `• ${h.servicio} (${h.moto}) — ${h.fecha}`)
+                            .join("<br>");
+                } else {
+                    cajaHistorial.innerHTML = "Todavía no tiene servicios registrados.";
                 }
 
                 badge.style.display = "block";
@@ -762,6 +787,12 @@
             const modelo = document.getElementById('motoModelo').value || "No especificado";
             const repuestos = document.getElementById('repuestosModo').value;
 
+            if (!servicioSeleccionado) {
+                alert("Antes de agendar, elegí qué necesita tu moto en la sección 'Servicios Disponibles' (más abajo en la página).");
+                document.getElementById('servicios').scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
+
             if (!dni) {
                 alert("Por favor ingresá tu DNI o registrate en la pestaña '1. Registro'.");
                 switchTab('tab-registro');
@@ -796,7 +827,16 @@
 
             turnosBD.push(nuevoTurno);
             
-            // Incrementar historial de trabajos del cliente
+            // Registrar el servicio en el historial del cliente y sumar al contador
+            if (!clientesBD[dni].historialServicios) {
+                clientesBD[dni].historialServicios = [];
+            }
+            clientesBD[dni].historialServicios.push({
+                fecha: fecha,
+                hora: hora,
+                servicio: servicioSeleccionado,
+                moto: `${marca} ${modelo}`
+            });
             clientesBD[dni].trabajosRealizados += 1;
 
             // Guardar cambios
@@ -815,7 +855,17 @@
 
             alert("¡Turno reservado exitosamente! Ya quedó bloqueado para otros clientes.");
             actualizarHorariosDisponibles();
+            verificarDniAuto();
             window.open(`https://wa.me/${NUMERO_WHATSAPP}?text=${mensaje}`, '_blank');
+
+            // Reseteo la selección de servicio para el próximo turno
+            servicioSeleccionado = null;
+            document.querySelectorAll('.btn-outline').forEach(b => b.classList.remove('selected'));
+            const texto = document.getElementById('servicioSeleccionadoTexto');
+            if (texto) {
+                texto.innerText = "Ninguno todavía — elegí uno en \"Servicios Disponibles\" ⬇️";
+                texto.style.color = "var(--rojo-racing)";
+            }
         }
 
         // CANCELAR TURNO
