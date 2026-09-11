@@ -194,40 +194,6 @@ body>div:last-child{background:#060708!important;border-color:var(--line)!import
 .online-status.ok{display:block;color:#63e99a;border-color:rgba(49,209,124,.35)}
 .online-status.off{display:block;color:#ffb45c;border-color:rgba(255,180,92,.35)}
 </style>
-
-<style id="mas-racing-mobile-turnos">
-@media (max-width: 600px) {
-  #turnos .panel, #turnos .card, #turnos .form-card, #turnos .turnos-panel, #turnos .turno-panel {
-    max-width: 100% !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-  }
-  #turnos { overflow-x: hidden !important; }
-  #turnos input, #turnos select, #turnos textarea, #turnos button {
-    max-width: 100%; box-sizing: border-box;
-  }
-  #turnos .grid, #turnos .form-grid, #turnos .campos, #turnos .form-row {
-    grid-template-columns: 1fr !important;
-  }
-  #turnos .tabs, #turnos .turno-tabs {
-    display: flex !important; overflow-x: auto !important;
-    flex-wrap: nowrap !important; -webkit-overflow-scrolling: touch;
-    gap: 8px; padding-bottom: 6px;
-  }
-  #turnos .tabs > *, #turnos .turno-tabs > * {
-    flex: 0 0 auto !important;
-  }
-  #turnos .panel, #turnos .card, #turnos .form-card, #turnos .turnos-panel, #turnos .turno-panel {
-    padding: 16px !important; border-radius: 16px !important;
-  }
-  #turnos h1, #turnos h2, #turnos h3 { line-height: 1.15; }
-}
-@media (max-width: 380px) {
-  #turnos .panel, #turnos .card, #turnos .form-card, #turnos .turnos-panel, #turnos .turno-panel {
-    padding: 12px !important;
-  }
-}
-</style>
 </head>
 <body>
     <div id="onlineStatus" class="online-status off">☁ Modo local</div>
@@ -478,6 +444,14 @@ body>div:last-child{background:#060708!important;border-color:var(--line)!import
                         <button type="button" class="btn-red" onclick="guardarTrabajoTaller()">
                             <i class="fa-solid fa-floppy-disk"></i> GUARDAR EN EL HISTORIAL
                         </button>
+
+                        <div class="workshop-appointments" style="margin-top:15px;">
+                            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;">
+                                <h4 style="font-size:13px;margin:0;">TURNOS AGENDADOS</h4>
+                                <button type="button" class="btn-mini" onclick="renderTurnosTaller()"><i class="fa-solid fa-rotate"></i> ACTUALIZAR</button>
+                            </div>
+                            <div id="tallerTurnosContainer"></div>
+                        </div>
 
                         <div id="tallerStatsPro" class="workshop-stats"></div>
                         <button type="button" class="btn-red" style="background:linear-gradient(135deg,#2c3038,#1a1d22); box-shadow:none; border-color:var(--gris-borde);" onclick="toggleHistorialGlobalTaller()">
@@ -1295,6 +1269,7 @@ body>div:last-child{background:#060708!important;border-color:var(--line)!import
                     document.getElementById('tallerFecha').value = new Date().toISOString().split('T')[0];
                 }
                 renderStatsTaller();
+                renderTurnosTaller();
             }
         }
 
@@ -1409,7 +1384,7 @@ body>div:last-child{background:#060708!important;border-color:var(--line)!import
             const fecha = document.getElementById('turnoFecha').value;
             const hora = document.getElementById('turnoHora').value;
             const marca = document.getElementById('motoMarca').value;
-            const modelo = document.getElementById('motoModelo').value || "No especificado";
+            const modelo = document.getElementById('motoModelo').value || 'No especificado';
             const km = document.getElementById('motoKm').value.trim();
             const repuestos = document.getElementById('repuestosModo').value;
 
@@ -1418,78 +1393,82 @@ body>div:last-child{background:#060708!important;border-color:var(--line)!import
                 document.getElementById('servicios').scrollIntoView({ behavior: 'smooth' });
                 return;
             }
-
-            if (!dni) {
-                alert("Por favor ingresá tu DNI o registrate en la pestaña '1. Registro'.");
-                switchTab('tab-registro');
-                return;
-            }
-
+            if (!dni) { alert("Por favor ingresá tu DNI o registrate en la pestaña '1. Registro'."); switchTab('tab-registro'); return; }
             if (!clientesBD[dni]) {
                 alert("Este DNI no está registrado. Te redirigimos a la pestaña '1. Registro'.");
-                switchTab('tab-registro');
-                document.getElementById('regDni').value = dni;
-                return;
+                switchTab('tab-registro'); document.getElementById('regDni').value = dni; return;
             }
+            if (!fecha || !hora) { alert('Elegí una fecha y horario válidos.'); return; }
 
-            if (!fecha || !hora) {
-                alert("Elegí una fecha y horario válidos.");
-                return;
-            }
-
-            await mostrarLoaderMoto("Reservando tu turno...");
+            // Bloqueo inmediato en la interfaz y verificación final contra Supabase.
+            const ocupadoLocal = turnosBD.some(t => t.fecha === fecha && t.hora === hora && t.estado === 'AGENDADO');
+            if (ocupadoLocal) { alert('Ese horario ya está reservado. Elegí otro.'); actualizarHorariosDisponibles(); return; }
 
             const nuevoTurno = {
-                id: Date.now(),
-                dni: dni,
-                clienteNombre: clientesBD[dni].nombre,
-                fecha: fecha,
-                hora: hora,
-                marca: marca,
-                modelo: modelo,
-                servicio: servicioSeleccionado,
-                repuestos: repuestos,
-                estado: "AGENDADO"
+                id: String(Date.now()) + '-' + Math.random().toString(36).slice(2,8),
+                dni, clienteNombre: clientesBD[dni].nombre, fecha, hora, marca, modelo,
+                servicio: servicioSeleccionado, repuestos, km, estado: 'AGENDADO'
             };
 
-            turnosBD.push(nuevoTurno);
-            guardarTurnosPro();
+            // Abrimos la pestaña de WhatsApp AHORA, antes de cualquier await, para que el navegador no la bloquee.
+            const ventanaWhatsApp = window.open('about:blank', '_blank');
+            await mostrarLoaderMoto('Reservando tu turno...', 700);
 
-            // Confirmamos la persistencia online antes de abrir WhatsApp.
-            // Si Supabase está disponible, el turno queda guardado en la nube.
+            let turnoGuardado = false;
+            let turnoFinal = nuevoTurno;
+
             if (ONLINE_DB_ACTIVA && supabaseClient) {
-                const guardadoOnline = await guardarDatoOnline("turnos", turnosBD);
-                if (!guardadoOnline) {
-                    turnosBD = turnosBD.filter(t => t.id !== nuevoTurno.id);
+                const { data, error } = await supabaseClient.rpc('reservar_mas_racing_turno', { p_turno: nuevoTurno });
+                if (!error && data?.ok) {
+                    turnoGuardado = true;
+                    turnoFinal = data.turno || nuevoTurno;
+                    // Actualizamos la copia local con el resultado confirmado por la base.
+                    turnosBD.push(turnoFinal);
                     guardarTurnosPro();
+                } else if (data?.reason === 'HORARIO_OCUPADO') {
+                    if (ventanaWhatsApp && !ventanaWhatsApp.closed) ventanaWhatsApp.close();
                     ocultarLoaderMoto();
-                    alert("No se pudo guardar el turno en la base online. Revisá tu conexión e intentá nuevamente.");
+                    await inicializarBaseOnline();
+                    actualizarHorariosDisponibles();
+                    alert('Ese horario acaba de ser reservado por otra persona. Elegí otro horario.');
                     return;
+                } else {
+                    console.error('Error reservando turno en Supabase:', error);
                 }
+            } else {
+                console.error('Supabase no está disponible; no se confirma el turno.');
+            }
+
+            if (!turnoGuardado) {
+                if (ventanaWhatsApp && !ventanaWhatsApp.closed) ventanaWhatsApp.close();
+                ocultarLoaderMoto();
+                alert('No se pudo guardar el turno online. No fue confirmado. Revisá tu conexión e intentá nuevamente.');
+                return;
             }
 
             const mensaje = `Hola *MAS RACING*! Confirmación de Turno Reservado:%0A%0A` +
-                            `👤 *Cliente:* ${clientesBD[dni].nombre} (DNI: ${dni})%0A` +
-                            `🏍️ *Moto:* ${marca} ${modelo}${km ? ' (' + km + ' km)' : ''}%0A` +
-                            `🛠️ *Servicio:* ${servicioSeleccionado}%0A` +
-                            `📦 *Repuestos:* ${repuestos}%0A` +
-                            `📅 *Fecha:* ${formatearFecha(fecha)}%0A` +
-                            `⏰ *Hora:* ${hora}%0A%0A` +
-                            `*Turno bloqueado en el sistema.* ¡Nos vemos ese día!`;
+                `👤 *Cliente:* ${encodeURIComponent(clientesBD[dni].nombre)} (DNI: ${encodeURIComponent(dni)})%0A` +
+                `🏍️ *Moto:* ${encodeURIComponent(marca + ' ' + modelo + (km ? ' (' + km + ' km)' : ''))}%0A` +
+                `🛠️ *Servicio:* ${encodeURIComponent(servicioSeleccionado)}%0A` +
+                `📦 *Repuestos:* ${encodeURIComponent(repuestos)}%0A` +
+                `📅 *Fecha:* ${encodeURIComponent(formatearFecha(fecha))}%0A` +
+                `⏰ *Hora:* ${encodeURIComponent(hora)}%0A%0A` +
+                `*Turno bloqueado en el sistema.* ¡Nos vemos ese día!`;
+
+            const waUrl = `https://wa.me/${NUMERO_WHATSAPP}?text=${mensaje}`;
+            if (ventanaWhatsApp && !ventanaWhatsApp.closed) ventanaWhatsApp.location.href = waUrl;
+            else window.location.href = waUrl;
 
             ocultarLoaderMoto();
-            alert("¡Turno reservado exitosamente!");
+            alert('¡Turno reservado exitosamente! Se abrió WhatsApp para avisar al mecánico.');
             actualizarHorariosDisponibles();
             verificarDniAuto();
-            window.open(`https://wa.me/${NUMERO_WHATSAPP}?text=${mensaje}`, '_blank');
+            renderTurnosTaller();
 
             servicioSeleccionado = null;
             document.querySelectorAll('.btn-outline').forEach(b => b.classList.remove('selected'));
             const texto = document.getElementById('servicioSeleccionadoTexto');
-            if (texto) {
-                texto.innerText = "Ninguno todavía — elegí uno en \"Servicios Disponibles\" ⬇️";
-                texto.style.color = "var(--rojo-racing)";
-            }
+            if (texto) { texto.innerText = 'Ninguno todavía — elegí uno en "Servicios Disponibles" ⬇️'; texto.style.color = 'var(--rojo-racing)'; }
         }
 
         function buscarTurnosCliente() {
@@ -1547,6 +1526,7 @@ body>div:last-child{background:#060708!important;border-color:var(--line)!import
                 document.getElementById('tallerPanel').style.display = 'block';
                 document.getElementById('tallerFecha').value = new Date().toISOString().split('T')[0];
                 renderStatsTaller();
+                renderTurnosTaller();
             } else {
                 alert('Clave incorrecta.');
             }
@@ -2192,6 +2172,47 @@ body>div:last-child{background:#060708!important;border-color:var(--line)!import
                 facturado += h.reduce((a,x)=>a+(x.montoTotal||0),0);
             });
             return {clientes,trabajos,services,facturado};
+        }
+
+        function renderTurnosTaller() {
+            const cont = document.getElementById('tallerTurnosContainer');
+            if (!cont) return;
+            const turnos = (turnosBD || []).filter(t => t.estado === 'AGENDADO').sort((a,b) => {
+                const da = new Date(`${a.fecha}T${String(a.hora || '00:00').replace(' HS','')}:00`).getTime();
+                const db = new Date(`${b.fecha}T${String(b.hora || '00:00').replace(' HS','')}:00`).getTime();
+                return da - db;
+            });
+            if (!turnos.length) {
+                cont.innerHTML = '<p style="font-size:11px;color:var(--texto-gris);margin:8px 0;">No hay turnos agendados.</p>';
+                return;
+            }
+            cont.innerHTML = '<div class="my-turnos-list" style="max-height:300px;margin-top:0;">' + turnos.map(t => `
+                <div class="turno-item" style="align-items:flex-start;">
+                    <div style="min-width:0;flex:1;">
+                        <strong>${formatearFecha(t.fecha)} — ${t.hora}</strong><br>
+                        <span style="color:#fff;font-weight:700;">${t.clienteNombre || 'Cliente'} · DNI ${t.dni}</span><br>
+                        <span style="color:var(--texto-gris);">${t.marca || ''} ${t.modelo || ''} · ${t.servicio || ''}${t.repuestos ? ' · Repuestos: ' + t.repuestos : ''}</span>
+                    </div>
+                    <button type="button" class="btn-red btn-cancel" style="width:auto;padding:6px 9px;margin-top:0;" onclick="cancelarTurnoTaller(${JSON.stringify(t.id)})" title="Cancelar turno">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>`).join('') + '</div>';
+        }
+
+        async function cancelarTurnoTaller(turnoId) {
+            const t = turnosBD.find(x => String(x.id) === String(turnoId) && x.estado === 'AGENDADO');
+            if (!t) return;
+            if (!confirm(`¿Cancelar el turno de ${t.clienteNombre || 'este cliente'} del ${formatearFecha(t.fecha)} a las ${t.hora}?`)) return;
+            t.estado = 'CANCELADO';
+            try {
+                localStorage.setItem('masracing_turnos_backup', JSON.stringify(turnosBD));
+                localStorage.setItem('masracing_turnos', JSON.stringify(turnosBD));
+            } catch (_) {}
+            const ok = await guardarDatoOnline('turnos', turnosBD);
+            if (!ok && ONLINE_DB_ACTIVA) { alert('No se pudo actualizar el turno online.'); return; }
+            renderTurnosTaller();
+            actualizarHorariosDisponibles();
+            alert('Turno cancelado. El horario volvió a quedar disponible.');
         }
 
         function renderStatsTaller() {
