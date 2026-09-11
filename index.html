@@ -1379,82 +1379,155 @@ body>div:last-child{background:#060708!important;border-color:var(--line)!import
             const km = document.getElementById('motoKm').value.trim();
             const repuestos = document.getElementById('repuestosModo').value;
 
-            if (!servicioSeleccionado) { alert("Antes de agendar, elegí qué necesita tu moto en la sección 'Servicios Disponibles'."); document.getElementById('servicios').scrollIntoView({behavior:'smooth'}); return; }
-            if (!dni) { alert("Por favor ingresá tu DNI o registrate en la pestaña '1. Registro'."); switchTab('tab-registro'); return; }
-            if (!clientesBD[dni]) { alert("Este DNI no está registrado. Te redirigimos a la pestaña '1. Registro'."); switchTab('tab-registro'); document.getElementById('regDni').value=dni; return; }
-            if (!fecha || !hora) { alert("Elegí una fecha y horario válidos."); return; }
-
-            // Abrimos una pestaña inmediatamente para evitar que el navegador bloquee WhatsApp.
-            const ventanaWhatsApp = window.open('about:blank','_blank');
-            await mostrarLoaderMoto("Confirmando tu turno...");
-
-            const nuevoTurno = {
-                id: Date.now(), dni,
-                clienteNombre: clientesBD[dni].nombre,
-                telefono: clientesBD[dni].telefono || '', fecha, hora, marca, modelo,
-                kilometraje: km || '', servicio: servicioSeleccionado, repuestos, estado:'AGENDADO'
-            };
-
-            if (!ONLINE_DB_ACTIVA || !supabaseClient) {
-                if (ventanaWhatsApp && !ventanaWhatsApp.closed) ventanaWhatsApp.close();
-                ocultarLoaderMoto(); alert("La base online no está disponible. El turno NO fue confirmado."); return;
+            if (!servicioSeleccionado) {
+                alert("Antes de agendar, elegí qué necesita tu moto en la sección 'Servicios Disponibles'.");
+                document.getElementById('servicios').scrollIntoView({ behavior:'smooth' });
+                return;
+            }
+            if (!dni) {
+                alert("Por favor ingresá tu DNI o registrate en la pestaña '1. Registro'.");
+                switchTab('tab-registro');
+                return;
+            }
+            if (!clientesBD[dni]) {
+                alert("Este DNI no está registrado. Te redirigimos a la pestaña '1. Registro'.");
+                switchTab('tab-registro');
+                document.getElementById('regDni').value = dni;
+                return;
+            }
+            if (!fecha || !hora) {
+                alert("Elegí una fecha y horario válidos.");
+                return;
             }
 
+            // Abrimos una ventana de WhatsApp de forma síncrona dentro del click.
+            // Así evitamos que el navegador la bloquee después de un await.
+            const ventanaWhatsApp = window.open('about:blank', '_blank');
+
+            const nuevoTurno = {
+                id: Date.now(),
+                dni,
+                clienteNombre: clientesBD[dni].nombre,
+                telefono: clientesBD[dni].telefono || '',
+                fecha,
+                hora,
+                marca,
+                modelo,
+                kilometraje: km || '',
+                servicio: servicioSeleccionado,
+                repuestos,
+                estado:'AGENDADO'
+            };
+
+            // La base debe estar activa antes de confirmar.
+            if (!ONLINE_DB_ACTIVA || !supabaseClient) {
+                if (ventanaWhatsApp && !ventanaWhatsApp.closed) ventanaWhatsApp.close();
+                alert("La base online no está disponible. El turno NO fue confirmado.");
+                return;
+            }
+
+            await mostrarLoaderMoto("Confirmando tu turno...");
+
             try {
-                const {data, error} = await supabaseClient.rpc('reservar_mas_racing_turno',{p_turno:nuevoTurno});
+                const { data, error } = await supabaseClient.rpc(
+                    'reservar_mas_racing_turno',
+                    { p_turno: nuevoTurno }
+                );
+
                 if (error) throw error;
+
                 if (!data || data.ok !== true) {
                     if (ventanaWhatsApp && !ventanaWhatsApp.closed) ventanaWhatsApp.close();
                     ocultarLoaderMoto();
-                    alert(data?.reason === 'HORARIO_OCUPADO' ? "⚠️ Ese horario ya fue reservado. Elegí otro horario disponible." : "No se pudo confirmar el turno. Intentá nuevamente.");
-                    actualizarHorariosDisponibles(); return;
+                    actualizarHorariosDisponibles();
+                    alert(
+                        data?.reason === 'HORARIO_OCUPADO'
+                            ? "⚠️ Ese horario ya fue reservado. Elegí otro horario disponible."
+                            : "No se pudo confirmar el turno. Intentá nuevamente."
+                    );
+                    return;
                 }
+
                 nuevoTurno.id = data.turno?.id || nuevoTurno.id;
-            } catch(error) {
-                console.error('Error reservando turno:',error);
+
+            } catch (error) {
+                console.error('Error reservando turno:', error);
                 if (ventanaWhatsApp && !ventanaWhatsApp.closed) ventanaWhatsApp.close();
-                ocultarLoaderMoto(); alert("No se pudo conectar con la base de datos. El turno NO fue confirmado."); return;
+                ocultarLoaderMoto();
+                alert("No se pudo guardar el turno en la base online. El turno NO fue confirmado.");
+                return;
             }
 
-            turnosBD.push(nuevoTurno);
-            guardarEnIndexedDB('masracing_turnos',turnosBD);
-            try { localStorage.setItem('masracing_turnos_backup',JSON.stringify(turnosBD)); localStorage.setItem('masracing_turnos',JSON.stringify(turnosBD)); } catch(_) {}
+            // Reflejamos el turno también en las copias locales para que el
+            // panel y la vista del cliente lo vean inmediatamente.
+            const yaExiste = turnosBD.some(t =>
+                String(t.id) === String(nuevoTurno.id) ||
+                (t.fecha === nuevoTurno.fecha && t.hora === nuevoTurno.hora && t.estado === 'AGENDADO')
+            );
+            if (!yaExiste) turnosBD.push(nuevoTurno);
 
-            const mensajeTexto = `🏁 *MAS RACING — SOLICITUD DE TURNO* 🏁
+            try {
+                localStorage.setItem('masracing_turnos_backup', JSON.stringify(turnosBD));
+                localStorage.setItem('masracing_turnos', JSON.stringify(turnosBD));
+            } catch (_) {}
+            guardarEnIndexedDB('masracing_turnos', turnosBD);
 
-`+
-                `Hola, quiero confirmar mi turno en *MAS RACING*.
+            const repuestosTexto =
+                /mecanico|taller/i.test(String(repuestos))
+                    ? 'A cargo del mecánico'
+                    : 'Los lleva el cliente';
 
-`+
-                `👤 *Cliente:* ${clientesBD[dni].nombre}
-`+
-                `🏍️ *Moto:* ${marca} ${modelo}
-`+
-                `📍 *Kilometraje:* ${km ? km+' km' : 'No informado'}
-`+
-                `🛠️ *Servicio:* ${servicioSeleccionado}
-`+
-                `📦 *Repuestos:* ${repuestos === 'mecanico' ? 'A cargo del mecánico' : 'Los llevo yo'}
-`+
-                `📅 *Fecha:* ${formatearFecha(fecha)}
-`+
-                `⏰ *Hora:* ${hora}
+            const mensajeTexto =
+`🏁 *MAS RACING — SOLICITUD DE TURNO* 🏁
 
-`+
-                `✅ *El turno quedó reservado en el sistema.*
+Hola 👋 Te escribo para confirmar mi turno en *MAS RACING*.
 
-`+
-                `¿Me confirmás el turno por acá? ¡Gracias! 🙌`;
-            const urlWhatsApp = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(mensajeTexto)}`;
-            if (ventanaWhatsApp && !ventanaWhatsApp.closed) ventanaWhatsApp.location.href=urlWhatsApp; else window.open(urlWhatsApp,'_blank');
+👤 *Cliente:* ${clientesBD[dni].nombre}
+🏍️ *Moto:* ${marca} ${modelo}
+📍 *Kilometraje:* ${km ? km + ' km' : 'No informado'}
+🛠️ *Servicio:* ${servicioSeleccionado}
+📦 *Repuestos:* ${repuestosTexto}
+
+📅 *Fecha:* ${formatearFecha(fecha)}
+⏰ *Hora:* ${hora}
+
+✅ *El turno quedó reservado en el sistema.*
+
+¿Me confirmás el turno por WhatsApp? ¡Gracias! 🙌`;
+
+            const urlWhatsApp =
+                `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(mensajeTexto)}`;
+
+            // Navegación segura de la ventana abierta dentro del click.
+            if (ventanaWhatsApp && !ventanaWhatsApp.closed) {
+                try {
+                    ventanaWhatsApp.location.href = urlWhatsApp;
+                } catch (_) {
+                    try { ventanaWhatsApp.close(); } catch (_) {}
+                    window.open(urlWhatsApp, '_blank', 'noopener,noreferrer');
+                }
+            } else {
+                // Fallback por si el navegador bloqueó la ventana previa.
+                const enlace = document.createElement('a');
+                enlace.href = urlWhatsApp;
+                enlace.target = '_blank';
+                enlace.rel = 'noopener noreferrer';
+                enlace.click();
+            }
 
             ocultarLoaderMoto();
-            alert("¡Turno reservado! Se abrirá WhatsApp para enviarle los datos al mecánico.");
-            actualizarHorariosDisponibles(); verificarDniAuto();
-            servicioSeleccionado=null;
-            document.querySelectorAll('.btn-outline').forEach(b=>b.classList.remove('selected'));
-            const texto=document.getElementById('servicioSeleccionadoTexto');
-            if(texto){texto.innerText='Ninguno todavía — elegí uno en "Servicios Disponibles" ⬇️'; texto.style.color='var(--rojo-racing)';}
+            alert("✅ Turno reservado. Se abrió WhatsApp para enviar los datos al mecánico.");
+
+            actualizarHorariosDisponibles();
+            verificarDniAuto();
+
+            servicioSeleccionado = null;
+            document.querySelectorAll('.btn-outline').forEach(b => b.classList.remove('selected'));
+            const texto = document.getElementById('servicioSeleccionadoTexto');
+            if (texto) {
+                texto.innerText = 'Ninguno todavía — elegí uno en "Servicios Disponibles" ⬇️';
+                texto.style.color = 'var(--rojo-racing)';
+            }
         }
 
         function buscarTurnosCliente() {
@@ -2233,7 +2306,104 @@ body>div:last-child{background:#060708!important;border-color:var(--line)!import
                         .footer { margin-top: 30px; text-align: center; font-size: 10px; color: #68707c; border-top: 1px solid rgba(255,255,255,.09); padding-top: 16px; }
                         .btn-imprimir { display:block; width:100%; margin-top:24px; padding:13px; background:linear-gradient(135deg,#ed2b27,#bf1714); color:#fff; border:none; border-radius:10px; font-weight:900; font-size:12px; cursor:pointer; text-transform:uppercase; letter-spacing:1px; }
                         @media print { .btn-imprimir { display:none; } body { margin: 0; } }
-                    </style>
+                    
+/* =========================================================
+   MAS RACING · AJUSTE MÓVIL FINAL
+   Solo compacta el panel de turnos. No cambia la estructura.
+   ========================================================= */
+@media (max-width:620px){
+  .hero{padding:28px 10px 18px}
+  .hero-text{width:100%;max-width:100%}
+  .hero-title{font-size:clamp(43px,11vw,58px);margin-bottom:14px}
+  .hero-subtitle{font-size:11px;line-height:1.55;margin-bottom:18px}
+  .card-container{width:100%;max-width:100%;margin:0}
+  .turno-card-unified{
+    width:100%;
+    max-width:100%;
+    padding:10px;
+    border-radius:14px;
+  }
+  .tabs-header{
+    grid-template-columns:repeat(6, minmax(64px,1fr));
+    gap:3px;
+    margin-bottom:14px;
+    padding:4px;
+    overflow-x:auto;
+    overflow-y:hidden;
+    scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
+  }
+  .tabs-header::-webkit-scrollbar{display:none}
+  .tab-btn{
+    min-height:48px;
+    padding:6px 3px;
+    font-size:6px;
+    white-space:nowrap;
+  }
+  .tab-btn i{font-size:11px;margin-bottom:3px}
+  .tab-content h4{font-size:18px;line-height:1.1;margin-bottom:8px}
+  .tab-content>p{font-size:9px;line-height:1.45}
+  .form-grid-2{
+    grid-template-columns:1fr 1fr;
+    gap:7px;
+  }
+  .form-group-sm{
+    margin-bottom:8px;
+  }
+  .form-group-sm label{
+    font-size:7px;
+    margin-bottom:4px;
+  }
+  .form-group-sm input,
+  .form-group-sm select{
+    height:38px;
+    padding:0 9px;
+    font-size:10px;
+    border-radius:8px;
+  }
+  .btn-red{
+    min-height:40px;
+    padding:9px 11px;
+    margin-top:7px;
+    font-size:8px;
+    border-radius:8px;
+  }
+  .profile-badge{
+    padding:10px;
+    margin-bottom:10px;
+    font-size:8px;
+  }
+  .my-turnos-list{
+    max-height:190px;
+    margin-top:10px;
+  }
+  .turno-item{
+    padding:9px;
+    margin-bottom:6px;
+    gap:8px;
+    font-size:8px;
+  }
+  #tallerPanel .btn-red,
+  #tallerLogin .btn-red{
+    min-height:40px;
+  }
+  #servicioSeleccionadoTexto{
+    font-size:9px !important;
+    line-height:1.3;
+    margin-top:6px;
+  }
+}
+
+@media (max-width:400px){
+  .hero{padding-left:7px;padding-right:7px}
+  .turno-card-unified{padding:8px}
+  .tabs-header{grid-template-columns:repeat(6,minmax(60px,1fr));}
+  .tab-btn{font-size:5.6px}
+  .form-grid-2{grid-template-columns:1fr 1fr;gap:6px}
+  .form-group-sm input,.form-group-sm select{height:36px;font-size:9.5px}
+  .btn-red{min-height:38px;font-size:7.5px}
+}
+</style>
                 </head>
                 <body>
                     <div class="encabezado">
