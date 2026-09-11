@@ -1480,6 +1480,9 @@ body>div:last-child{background:#060708!important;border-color:var(--line)!import
                         <div class="taller-turnos-line">🛠️ ${t.servicio || 'Servicio no informado'}</div>
                         <div class="taller-turnos-line">📦 ${t.repuestos || 'No informado'}</div>
                         <div class="taller-turnos-line">📱 ${telefono}</div>
+                        <button type="button" class="btn-red btn-cancel" style="width:100%;margin-top:10px;padding:8px 10px;" onclick="cancelarTurnoTaller(${JSON.stringify(t.id)}, ${JSON.stringify(String(t.dni || ''))})">
+                            <i class="fa-solid fa-calendar-xmark"></i> CANCELAR TURNO
+                        </button>
                     </div>`;
             }).join('');
         }
@@ -1646,6 +1649,43 @@ body>div:last-child{background:#060708!important;border-color:var(--line)!import
                 `;
                 contenedor.appendChild(item);
             });
+        }
+
+        async function cancelarTurnoTaller(turnoId, dni) {
+            if (!sessionStorage.getItem('taller_autenticado')) {
+                alert("Ingresá al modo taller para cancelar un turno.");
+                return;
+            }
+            if (!confirm("¿Confirmás la cancelación de este turno? El horario volverá a quedar disponible.")) return;
+
+            if (ONLINE_DB_ACTIVA && supabaseClient) {
+                try {
+                    const { data, error } = await supabaseClient.rpc('cancelar_mas_racing_turno', {
+                        p_turno_id: Number(turnoId),
+                        p_dni: String(dni)
+                    });
+                    if (error) throw error;
+                    if (!data?.ok) {
+                        await refrescarTurnosOnline();
+                        renderTurnosTaller();
+                        actualizarHorariosDisponibles();
+                        alert("Ese turno ya no está disponible para cancelar.");
+                        return;
+                    }
+                } catch (error) {
+                    console.error('Error cancelando turno desde taller:', error);
+                    alert("No se pudo cancelar el turno. Intentá nuevamente.");
+                    return;
+                }
+            } else {
+                turnosBD = turnosBD.map(t => (String(t.id) === String(turnoId) && String(t.dni) === String(dni)) ? { ...t, estado: "CANCELADO" } : t);
+                guardarTurnosSoloLocal();
+            }
+
+            await refrescarTurnosOnline();
+            renderTurnosTaller();
+            actualizarHorariosDisponibles();
+            alert("Turno cancelado correctamente. El horario quedó disponible nuevamente.");
         }
 
         async function cancelarTurno(turnoId, dni) {
