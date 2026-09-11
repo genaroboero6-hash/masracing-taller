@@ -797,8 +797,8 @@ body>div:last-child{background:#060708!important;border-color:var(--line)!import
         // ============================================================
         // Pegá acá la URL y la PUBLISHABLE KEY de tu proyecto.
         // NUNCA pongas la service_role key en este HTML.
-        const SUPABASE_URL = "PEGAR_AQUI_URL_DE_TU_PROYECTO";
-        const SUPABASE_PUBLISHABLE_KEY = "PEGAR_AQUI_PUBLISHABLE_KEY";
+        const SUPABASE_URL = "https://eswjdtyegsjzdzvihwva.supabase.co";
+        const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_r5kRfuDyeCW7dHjIJo59jg_OMMizKwD";
         const SUPABASE_TABLE = "mas_racing_data";
         let supabaseClient = null;
         let ONLINE_DB_ACTIVA = false;
@@ -1397,12 +1397,34 @@ body>div:last-child{background:#060708!important;border-color:var(--line)!import
             });
         }
 
+        function guardarTurnosSoloLocal() {
+            const json = JSON.stringify(turnosBD);
+            try {
+                localStorage.setItem('masracing_turnos_backup', json);
+                localStorage.setItem('masracing_turnos', json);
+                localStorage.setItem('masracing_turnos_version', PERSISTENCIA_VERSION);
+                localStorage.setItem('masracing_turnos_ultima_actualizacion', new Date().toISOString());
+            } catch (error) {
+                console.error('No se pudo guardar turnos localmente:', error);
+            }
+            guardarEnIndexedDB('masracing_turnos', turnosBD);
+        }
+
+        async function refrescarTurnosOnline() {
+            if (!ONLINE_DB_ACTIVA || !supabaseClient) return;
+            const remoto = await cargarDatoOnline('turnos');
+            if (Array.isArray(remoto?.data)) {
+                turnosBD = fusionarTurnos(turnosBD, remoto.data);
+                guardarTurnosSoloLocal();
+            }
+        }
+
         async function reservarYEnviarWhatsApp() {
             const dni = document.getElementById('turnoDni').value.trim();
             const fecha = document.getElementById('turnoFecha').value;
             const hora = document.getElementById('turnoHora').value;
-            const marca = document.getElementById('motoMarca').value;
-            const modelo = document.getElementById('motoModelo').value || "No especificado";
+            const marca = document.getElementById('motoMarca').value.trim();
+            const modelo = document.getElementById('motoModelo').value.trim() || "No especificado";
             const km = document.getElementById('motoKm').value.trim();
             const repuestos = document.getElementById('repuestosModo').value;
 
@@ -1411,68 +1433,113 @@ body>div:last-child{background:#060708!important;border-color:var(--line)!import
                 document.getElementById('servicios').scrollIntoView({ behavior: 'smooth' });
                 return;
             }
-
             if (!dni) {
                 alert("Por favor ingresá tu DNI o registrate en la pestaña '1. Registro'.");
                 switchTab('tab-registro');
                 return;
             }
-
             if (!clientesBD[dni]) {
                 alert("Este DNI no está registrado. Te redirigimos a la pestaña '1. Registro'.");
                 switchTab('tab-registro');
                 document.getElementById('regDni').value = dni;
                 return;
             }
-
             if (!fecha || !hora) {
                 alert("Elegí una fecha y horario válidos.");
                 return;
             }
+            if (!ONLINE_DB_ACTIVA || !supabaseClient) {
+                alert("No se pudo conectar con la base online. No se reservó el turno para evitar duplicados.");
+                return;
+            }
 
-            await mostrarLoaderMoto("Reservando tu turno...");
+            await mostrarLoaderMoto("Verificando y reservando tu turno...");
 
             const nuevoTurno = {
                 id: Date.now(),
-                dni: dni,
+                dni,
                 clienteNombre: clientesBD[dni].nombre,
-                fecha: fecha,
-                hora: hora,
-                marca: marca,
-                modelo: modelo,
+                clienteTelefono: clientesBD[dni].telefono || '',
+                clienteEmail: clientesBD[dni].email || '',
+                fecha,
+                hora,
+                marca,
+                modelo,
+                km: km || null,
                 servicio: servicioSeleccionado,
-                repuestos: repuestos,
-                estado: "AGENDADO"
+                repuestos,
+                estado: "AGENDADO",
+                creadoEn: new Date().toISOString()
             };
 
-            turnosBD.push(nuevoTurno);
-            guardarTurnosPro();
+            try {
+                const { data, error } = await supabaseClient.rpc('reservar_mas_racing_turno', { p_turno: nuevoTurno });
+                if (error) throw error;
+                if (!data?.ok) {
+                    ocultarLoaderMoto();
+                    if (data?.reason === 'HORARIO_OCUPADO') {
+                        await refrescarTurnosOnline();
+                        actualizarHorariosDisponibles();
+                        alert("Ese horario acaba de ser reservado por otro cliente. Elegí otro horario.");
+                    } else {
+                        alert("No se pudo reservar el turno. Intentá nuevamente.");
+                    }
+                    return;
+                }
 
-            const mensaje = `Hola *MAS RACING*! Confirmación de Turno Reservado:%0A%0A` +
-                            `👤 *Cliente:* ${clientesBD[dni].nombre} (DNI: ${dni})%0A` +
-                            `🏍️ *Moto:* ${marca} ${modelo}${km ? ' (' + km + ' km)' : ''}%0A` +
-                            `🛠️ *Servicio:* ${servicioSeleccionado}%0A` +
-                            `📦 *Repuestos:* ${repuestos}%0A` +
-                            `📅 *Fecha:* ${formatearFecha(fecha)}%0A` +
-                            `⏰ *Hora:* ${hora}%0A%0A` +
-                            `*Turno bloqueado en el sistema.* ¡Nos vemos ese día!`;
+                const turnoConfirmado = data.turno || nuevoTurno;
+                const idx = turnosBD.findIndex(t => String(t.id) === String(turnoConfirmado.id));
+                if (idx >= 0) turnosBD[idx] = turnoConfirmado;
+                else turnosBD.push(turnoConfirmado);
+                guardarTurnosSoloLocal();
 
-            ocultarLoaderMoto();
-            alert("¡Turno reservado exitosamente!");
-            actualizarHorariosDisponibles();
-            verificarDniAuto();
-            window.open(`https://wa.me/${NUMERO_WHATSAPP}?text=${mensaje}`, '_blank');
+                const mensajePlano =
+                    `🏁 MAS RACING — SOLICITUD DE TURNO 🏁\n\n` +
+                    `👤 CLIENTE\n` +
+                    `Nombre: ${clientesBD[dni].nombre}\n` +
+                    `DNI: ${dni}\n` +
+                    `📱 WhatsApp: ${clientesBD[dni].telefono || 'No informado'}\n` +
+                    `✉️ Email: ${clientesBD[dni].email || 'No informado'}\n\n` +
+                    `🏍️ MOTO\n` +
+                    `Marca: ${marca || 'No informada'}\n` +
+                    `Modelo: ${modelo}\n` +
+                    `Kilometraje: ${km ? km + ' km' : 'No informado'}\n\n` +
+                    `🛠️ SERVICIO SOLICITADO\n` +
+                    `${servicioSeleccionado}\n\n` +
+                    `📦 REPUESTOS\n` +
+                    `${repuestos}\n\n` +
+                    `📅 FECHA: ${formatearFecha(fecha)}\n` +
+                    `⏰ HORA: ${hora}\n\n` +
+                    `✅ TURNO BLOQUEADO EN EL SISTEMA\n` +
+                    `Estado: AGENDADO\n\n` +
+                    `Por favor confirmar la recepción de la solicitud por WhatsApp.`;
 
-            servicioSeleccionado = null;
-            document.querySelectorAll('.btn-outline').forEach(b => b.classList.remove('selected'));
-            const texto = document.getElementById('servicioSeleccionadoTexto');
-            if (texto) {
-                texto.innerText = "Ninguno todavía — elegí uno en \"Servicios Disponibles\" ⬇️";
-                texto.style.color = "var(--rojo-racing)";
+                const urlWhatsApp = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(mensajePlano)}`;
+
+                ocultarLoaderMoto();
+                alert("✅ Turno reservado. Ahora se abrirá WhatsApp para enviar la solicitud al mecánico.");
+                actualizarHorariosDisponibles();
+                verificarDniAuto();
+
+                // En celulares la navegación directa es más confiable que window.open
+                // después de una llamada asíncrona a Supabase.
+                window.location.href = urlWhatsApp;
+
+                servicioSeleccionado = null;
+                document.querySelectorAll('.btn-outline').forEach(b => b.classList.remove('selected'));
+                const texto = document.getElementById('servicioSeleccionadoTexto');
+                if (texto) {
+                    texto.innerText = "Ninguno todavía — elegí uno en \"Servicios Disponibles\" ⬇️";
+                    texto.style.color = "var(--rojo-racing)";
+                }
+            } catch (error) {
+                console.error('Error reservando turno:', error);
+                ocultarLoaderMoto();
+                alert("No se pudo reservar el turno. No se guardó ningún turno. Revisá tu conexión e intentá nuevamente.");
             }
         }
 
-        function buscarTurnosCliente() {
+        async function buscarTurnosCliente() {
             const dni = document.getElementById('buscarDni').value.trim();
             const contenedor = document.getElementById('listaMisTurnos');
             contenedor.innerHTML = "";
@@ -1482,7 +1549,9 @@ body>div:last-child{background:#060708!important;border-color:var(--line)!import
                 return;
             }
 
-            const misTurnos = turnosBD.filter(t => t.dni === dni && t.estado === "AGENDADO");
+            await refrescarTurnosOnline();
+            const misTurnos = turnosBD.filter(t => t.dni === dni && t.estado === "AGENDADO")
+                .sort((a,b) => `${a.fecha} ${a.hora}`.localeCompare(`${b.fecha} ${b.hora}`));
 
             if (misTurnos.length === 0) {
                 contenedor.innerHTML = "<p style='font-size:12px; color:var(--texto-gris); margin-top:10px;'>No tenés turnos vigentes agendados.</p>";
@@ -1495,9 +1564,10 @@ body>div:last-child{background:#060708!important;border-color:var(--line)!import
                 item.innerHTML = `
                     <div>
                         <strong>${formatearFecha(t.fecha)} - ${t.hora}</strong><br>
-                        <span>${t.servicio} (${t.marca} ${t.modelo})</span>
+                        <span>${t.servicio} (${t.marca} ${t.modelo})</span><br>
+                        <small style="color:var(--muted);">${t.km ? t.km + ' km · ' : ''}${t.repuestos || ''}</small>
                     </div>
-                    <button class="btn-red btn-cancel" style="width:auto; padding:6px 10px;" onclick="cancelarTurno(${t.id})">
+                    <button class="btn-red btn-cancel" style="width:auto; padding:6px 10px;" onclick="cancelarTurno(${t.id}, '${dni}')">
                         Cancelar
                     </button>
                 `;
@@ -1505,18 +1575,34 @@ body>div:last-child{background:#060708!important;border-color:var(--line)!import
             });
         }
 
-        function cancelarTurno(turnoId) {
-            if (confirm("¿Estás seguro de que querés cancelar este turno?")) {
-                turnosBD = turnosBD.map(t => {
-                    if (t.id === turnoId) t.estado = "CANCELADO";
-                    return t;
-                });
+        async function cancelarTurno(turnoId, dni) {
+            if (!confirm("¿Estás seguro de que querés cancelar este turno?")) return;
 
-                guardarTurnosPro();
-                alert("Tu turno ha sido cancelado.");
-                buscarTurnosCliente();
-                actualizarHorariosDisponibles();
+            if (ONLINE_DB_ACTIVA && supabaseClient) {
+                try {
+                    const { data, error } = await supabaseClient.rpc('cancelar_mas_racing_turno', { p_turno_id: Number(turnoId), p_dni: String(dni) });
+                    if (error) throw error;
+                    if (!data?.ok) {
+                        await refrescarTurnosOnline();
+                        buscarTurnosCliente();
+                        actualizarHorariosDisponibles();
+                        alert("El turno ya no está disponible para cancelar.");
+                        return;
+                    }
+                } catch (error) {
+                    console.error('Error cancelando turno:', error);
+                    alert("No se pudo cancelar el turno. Intentá nuevamente.");
+                    return;
+                }
+            } else {
+                turnosBD = turnosBD.map(t => (String(t.id) === String(turnoId) && t.dni === dni) ? { ...t, estado: "CANCELADO" } : t);
+                guardarTurnosSoloLocal();
             }
+
+            await refrescarTurnosOnline();
+            alert("Tu turno ha sido cancelado.");
+            await buscarTurnosCliente();
+            actualizarHorariosDisponibles();
         }
 
         function ingresarPanelTaller() {
