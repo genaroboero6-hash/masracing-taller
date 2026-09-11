@@ -102,6 +102,17 @@ nav a:hover:after,nav a.active:after{transform:scaleX(1)}
 .benefits-grid{position:relative;z-index:1;max-width:1500px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:22px;align-items:stretch}.benefit-item{display:flex;align-items:flex-start;gap:13px;padding:16px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.018)}.benefit-item i{flex:0 0 auto;font-size:18px;color:var(--red);margin-top:2px}.benefit-info h5{font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}.benefit-info p{font-size:9px;color:var(--muted);line-height:1.5}.btn-maps{background:rgba(255,255,255,.035);border:1px solid var(--line-strong);color:#fff;padding:7px 9px;border-radius:7px;font-size:7px;font-weight:800;text-transform:uppercase;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:.2s;margin-top:8px}.btn-maps:hover{background:var(--red);border-color:var(--red)}
 body>div:last-child{background:#060708!important;border-color:var(--line)!important;color:#454c56!important}body>div:last-child a{color:#454c56!important}
 
+/* TURNOS DEL TALLER */
+.taller-turnos-panel{margin:14px 0;padding:12px;border:1px solid var(--gris-borde);border-radius:12px;background:rgba(255,255,255,.018)}
+.taller-turnos-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.taller-turnos-item{padding:10px;border:1px solid var(--gris-borde);border-radius:10px;background:rgba(7,9,11,.72);margin-bottom:7px}
+.taller-turnos-item:last-child{margin-bottom:0}
+.taller-turnos-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.taller-turnos-date{font-weight:900;font-size:10px}
+.taller-turnos-status{font-size:7px;font-weight:900;letter-spacing:.7px;padding:4px 7px;border-radius:999px;background:rgba(49,209,124,.1);color:var(--green);border:1px solid rgba(49,209,124,.25);white-space:nowrap}
+.taller-turnos-line{font-size:8px;color:var(--texto-gris);margin-top:4px;line-height:1.45}
+.taller-turnos-empty{font-size:9px;color:var(--texto-gris);padding:8px 2px}
+
 /* MOTION */
 @keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
 
@@ -473,6 +484,18 @@ body>div:last-child{background:#060708!important;border-color:var(--line)!import
                         </button>
 
                         <div id="tallerStatsPro" class="workshop-stats"></div>
+
+                        <div class="taller-turnos-panel" id="tallerTurnosPanel">
+                            <div class="taller-turnos-head">
+                                <div>
+                                    <h4 style="font-size:13px; margin:0;">TURNOS SOLICITADOS</h4>
+                                    <p style="font-size:9px;color:var(--texto-gris);margin:3px 0 0;">Se sincronizan automáticamente con la base online.</p>
+                                </div>
+                                <button type="button" class="btn-mini" onclick="sincronizarTurnosTaller()"><i class="fa-solid fa-rotate"></i> ACTUALIZAR</button>
+                            </div>
+                            <div id="tallerTurnosLista"></div>
+                        </div>
+
                         <button type="button" class="btn-red" style="background:linear-gradient(135deg,#2c3038,#1a1d22); box-shadow:none; border-color:var(--gris-borde);" onclick="toggleHistorialGlobalTaller()">
                             <i class="fa-solid fa-layer-group"></i> VER HISTORIAL COMPLETO DEL TALLER
                         </button>
@@ -1411,12 +1434,62 @@ body>div:last-child{background:#060708!important;border-color:var(--line)!import
         }
 
         async function refrescarTurnosOnline() {
-            if (!ONLINE_DB_ACTIVA || !supabaseClient) return;
-            const remoto = await cargarDatoOnline('turnos');
-            if (Array.isArray(remoto?.data)) {
-                turnosBD = fusionarTurnos(turnosBD, remoto.data);
-                guardarTurnosSoloLocal();
+            if (!ONLINE_DB_ACTIVA || !supabaseClient) return false;
+            try {
+                const remoto = await cargarDatoOnline('turnos');
+                if (Array.isArray(remoto?.data)) {
+                    turnosBD = remoto.data;
+                    guardarTurnosSoloLocal();
+                    return true;
+                }
+            } catch (error) {
+                console.error('No se pudieron sincronizar los turnos:', error);
             }
+            return false;
+        }
+
+        function renderTurnosTaller() {
+            const cont = document.getElementById('tallerTurnosLista');
+            if (!cont) return;
+            const turnosActivos = (turnosBD || [])
+                .filter(t => t && t.estado === 'AGENDADO')
+                .slice()
+                .sort((a,b) => `${a.fecha || ''}T${a.hora || '00:00'}`.localeCompare(`${b.fecha || ''}T${b.hora || '00:00'}`));
+
+            if (turnosActivos.length === 0) {
+                cont.innerHTML = '<div class="taller-turnos-empty">No hay turnos solicitados/agendados en este momento.</div>';
+                return;
+            }
+
+            cont.innerHTML = turnosActivos.map(t => {
+                const cliente = clientesBD?.[String(t.dni)] || {};
+                const nombre = t.clienteNombre || cliente.nombre || 'Cliente sin nombre';
+                const telefono = t.clienteTelefono || cliente.telefono || 'Sin WhatsApp registrado';
+                const moto = `${t.marca || ''} ${t.modelo || ''}`.trim() || 'Moto no informada';
+                const km = t.km ? ` · ${t.km} km` : '';
+                return `
+                    <div class="taller-turnos-item">
+                        <div class="taller-turnos-top">
+                            <div>
+                                <div class="taller-turnos-date">📅 ${formatearFecha(t.fecha)} · ⏰ ${t.hora || '--:--'}</div>
+                                <div class="taller-turnos-line"><strong style="color:#fff;">${nombre}</strong> · DNI ${t.dni || '—'}</div>
+                            </div>
+                            <span class="taller-turnos-status">AGENDADO</span>
+                        </div>
+                        <div class="taller-turnos-line">🏍️ ${moto}${km}</div>
+                        <div class="taller-turnos-line">🛠️ ${t.servicio || 'Servicio no informado'}</div>
+                        <div class="taller-turnos-line">📦 ${t.repuestos || 'No informado'}</div>
+                        <div class="taller-turnos-line">📱 ${telefono}</div>
+                    </div>`;
+            }).join('');
+        }
+
+        async function sincronizarTurnosTaller() {
+            const cont = document.getElementById('tallerTurnosLista');
+            if (cont) cont.innerHTML = '<div class="taller-turnos-empty">Actualizando turnos...</div>';
+            const ok = await refrescarTurnosOnline();
+            renderTurnosTaller();
+            if (ok) actualizarHorariosDisponibles();
         }
 
         async function reservarYEnviarWhatsApp() {
@@ -1613,6 +1686,8 @@ body>div:last-child{background:#060708!important;border-color:var(--line)!import
                 document.getElementById('tallerPanel').style.display = 'block';
                 document.getElementById('tallerFecha').value = new Date().toISOString().split('T')[0];
                 renderStatsTaller();
+                renderTurnosTaller();
+                sincronizarTurnosTaller();
             } else {
                 alert('Clave incorrecta.');
             }
@@ -2390,10 +2465,20 @@ body>div:last-child{background:#060708!important;border-color:var(--line)!import
             if (document.visibilityState === "visible" && ONLINE_DB_ACTIVA) {
                 await inicializarBaseOnline();
                 actualizarVistasClientesRegistrados();
+                if (document.getElementById('tallerPanel')?.style.display !== 'none') {
+                    await sincronizarTurnosTaller();
+                }
                 const dni = document.getElementById("tallerDni")?.value?.trim();
                 if (dni) renderHistorialTaller(dni);
             }
         });
+
+        setInterval(async () => {
+            const panel = document.getElementById('tallerPanel');
+            if (panel && panel.style.display !== 'none' && document.visibilityState === 'visible' && ONLINE_DB_ACTIVA) {
+                await sincronizarTurnosTaller();
+            }
+        }, 15000);
 
         // Inicialización
         window.addEventListener('DOMContentLoaded', async () => {
@@ -2407,6 +2492,7 @@ body>div:last-child{background:#060708!important;border-color:var(--line)!import
 
             await recuperarDesdeIndexedDBSiHaceFalta();
             await inicializarBaseOnline();
+            renderTurnosTaller();
 
             Object.keys(clientesBD).forEach(dni => {
                 clientesBD[dni].trabajosRealizados = (clientesBD[dni].historialServicios||[]).length;
