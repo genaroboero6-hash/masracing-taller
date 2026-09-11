@@ -194,6 +194,97 @@ body>div:last-child{background:#060708!important;border-color:var(--line)!import
 .online-status.ok{display:block;color:#63e99a;border-color:rgba(49,209,124,.35)}
 .online-status.off{display:block;color:#ffb45c;border-color:rgba(255,180,92,.35)}
 </style>
+
+<style id="masracing-mobile-final">
+/* MAS RACING — adaptación celular limpia: conserva el diseño, solo ajusta escala/espaciado */
+@media (max-width: 620px){
+  html,body{width:100%;max-width:100%;overflow-x:hidden}
+  body{font-size:12px}
+  .hero{
+    display:grid;
+    grid-template-columns:1fr;
+    min-height:0;
+    padding:32px 12px 26px!important;
+    gap:16px;
+  }
+  .hero-text{width:100%;max-width:100%;padding:0}
+  .hero-title{font-size:clamp(44px,12vw,56px)!important;line-height:.88;letter-spacing:-1px;margin-bottom:12px}
+  .hero-subtitle{font-size:10px!important;line-height:1.5;margin-bottom:12px}
+  .card-container{
+    width:100%!important;
+    max-width:350px!important;
+    margin:0 auto!important;
+  }
+  .turno-card-unified{
+    width:100%!important;
+    max-width:350px!important;
+    margin:0 auto!important;
+    padding:10px!important;
+    border-radius:14px!important;
+    box-sizing:border-box;
+  }
+  .tabs-header{
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:4px!important;
+    padding:3px!important;
+    margin-bottom:10px!important;
+    overflow:visible!important;
+  }
+  .tab-btn{
+    min-width:0!important;
+    min-height:44px!important;
+    height:44px!important;
+    padding:5px 2px!important;
+    font-size:5.8px!important;
+    line-height:1.05!important;
+    white-space:normal!important;
+  }
+  .tab-btn i{font-size:10px!important;margin-bottom:2px}
+  .tab-content{padding:0 2px!important}
+  .tab-content h4{font-size:16px!important;line-height:1.1;margin:0 0 6px!important}
+  .tab-content>p{font-size:8.5px!important;line-height:1.4;margin:0 0 8px!important}
+  .form-grid-2{grid-template-columns:1fr 1fr!important;gap:6px!important}
+  .form-grid-2 .full{grid-column:1 / -1!important}
+  .form-group-sm{margin-bottom:6px!important}
+  .form-group-sm label{font-size:6.5px!important;margin-bottom:3px!important}
+  .form-group-sm input,.form-group-sm select{
+    width:100%!important;
+    box-sizing:border-box!important;
+    height:36px!important;
+    min-height:36px!important;
+    padding:0 8px!important;
+    font-size:9.5px!important;
+    border-radius:7px!important;
+  }
+  .btn-red{
+    min-height:38px!important;
+    padding:8px 9px!important;
+    margin-top:5px!important;
+    font-size:7.5px!important;
+    border-radius:8px!important;
+  }
+  #servicioSeleccionadoTexto{font-size:8px!important;line-height:1.25;margin-top:4px!important}
+  .profile-badge{padding:8px!important;margin-bottom:7px!important;font-size:7.5px!important}
+  .my-turnos-list{max-height:170px!important;margin-top:8px!important;overflow:auto}
+  .turno-item{padding:8px!important;margin-bottom:5px!important;gap:6px!important;font-size:7.5px!important}
+  #tallerPanel .btn-red,#tallerLogin .btn-red{min-height:38px!important}
+  .workshop-stats{grid-template-columns:repeat(3,1fr)!important}
+  .main-section{padding:38px 12px!important}
+  .section-title{font-size:29px!important}
+  .services-grid{grid-template-columns:1fr!important;gap:10px!important}
+  .service-card{min-height:145px!important}
+}
+@media (max-width:380px){
+  .hero{padding-left:8px!important;padding-right:8px!important}
+  .card-container,.turno-card-unified{max-width:334px!important}
+  .turno-card-unified{padding:8px!important}
+  .tab-btn{font-size:5.4px!important;min-height:40px!important;height:40px!important}
+  .form-grid-2{gap:5px!important}
+  .form-group-sm input,.form-group-sm select{height:34px!important;min-height:34px!important;font-size:9px!important}
+  .btn-red{min-height:36px!important;font-size:7px!important}
+}
+</style>
 </head>
 <body>
     <div id="onlineStatus" class="online-status off">☁ Modo local</div>
@@ -1498,17 +1589,7 @@ Hola 👋 Te escribo para confirmar mi turno en *MAS RACING*.
             const urlWhatsApp =
                 `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(mensajeTexto)}`;
 
-            // En celular conviene navegar directamente a wa.me: así el sistema puede
-            // entregar el enlace a la app de WhatsApp sin que el navegador bloquee un popup.
-            const esCelular = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
-            if (esCelular) {
-                try { ventanaWhatsApp?.close(); } catch (_) {}
-                ocultarLoaderMoto();
-                window.location.href = urlWhatsApp;
-                return;
-            }
-
-            // En PC abrimos WhatsApp Web en una pestaña nueva.
+            // Navegación segura de la ventana abierta dentro del click.
             if (ventanaWhatsApp && !ventanaWhatsApp.closed) {
                 try {
                     ventanaWhatsApp.location.href = urlWhatsApp;
@@ -1517,13 +1598,12 @@ Hola 👋 Te escribo para confirmar mi turno en *MAS RACING*.
                     window.open(urlWhatsApp, '_blank', 'noopener,noreferrer');
                 }
             } else {
+                // Fallback por si el navegador bloqueó la ventana previa.
                 const enlace = document.createElement('a');
                 enlace.href = urlWhatsApp;
                 enlace.target = '_blank';
                 enlace.rel = 'noopener noreferrer';
-                document.body.appendChild(enlace);
                 enlace.click();
-                enlace.remove();
             }
 
             ocultarLoaderMoto();
@@ -2319,118 +2399,100 @@ Hola 👋 Te escribo para confirmar mi turno en *MAS RACING*.
                         @media print { .btn-imprimir { display:none; } body { margin: 0; } }
                     
 /* =========================================================
-   MAS RACING · MÓVIL ESTABLE
-   Mantiene la estructura y diseño. Solo compacta y centra el panel.
+   MAS RACING · AJUSTE MÓVIL FINAL
+   Solo compacta el panel de turnos. No cambia la estructura.
    ========================================================= */
 @media (max-width:620px){
-  html,body{width:100%;max-width:100%;overflow-x:hidden}
-  header{min-height:auto;padding:13px 14px}
-  .logo-text{font-size:23px}
-  nav{gap:8px}
-  nav a{font-size:8px}
-
-  .hero{
-    grid-template-columns:1fr;
-    min-height:0;
-    padding:30px 12px 22px;
-    gap:18px;
-    background-position:62% center;
-  }
-  .hero-text{width:100%;max-width:100%;padding:0}
-  .hero-text:before{font-size:7px;padding:6px 9px;margin-bottom:12px}
-  .hero-title{font-size:clamp(43px,12.5vw,52px);line-height:.88;letter-spacing:-.8px;margin-bottom:12px}
-  .hero-subtitle{font-size:10px;line-height:1.55;max-width:330px;margin-bottom:13px}
-  .hero-text:after{font-size:6.5px;line-height:1.4}
-
-  .card-container{
-    width:100%;
-    max-width:350px;
-    margin:0 auto;
-  }
+  .hero{padding:28px 10px 18px}
+  .hero-text{width:100%;max-width:100%}
+  .hero-title{font-size:clamp(43px,11vw,58px);margin-bottom:14px}
+  .hero-subtitle{font-size:11px;line-height:1.55;margin-bottom:18px}
+  .card-container{width:100%;max-width:100%;margin:0}
   .turno-card-unified{
     width:100%;
-    max-width:350px;
-    box-sizing:border-box;
-    padding:8px;
+    max-width:100%;
+    padding:10px;
     border-radius:14px;
   }
-
   .tabs-header{
-    display:grid;
-    grid-template-columns:repeat(3,minmax(0,1fr));
+    grid-template-columns:repeat(6, minmax(64px,1fr));
     gap:3px;
-    padding:3px;
-    margin-bottom:10px;
-    overflow:visible;
+    margin-bottom:14px;
+    padding:4px;
+    overflow-x:auto;
+    overflow-y:hidden;
+    scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
   }
+  .tabs-header::-webkit-scrollbar{display:none}
   .tab-btn{
-    min-width:0;
-    min-height:42px;
-    padding:5px 2px;
-    font-size:5.8px;
-    line-height:1.05;
-    white-space:normal;
+    min-height:48px;
+    padding:6px 3px;
+    font-size:6px;
+    white-space:nowrap;
   }
-  .tab-btn i{font-size:10px;margin-bottom:2px}
-
-  .tab-content{padding:0 2px}
-  .tab-content h4{font-size:15px!important;line-height:1.1;margin-bottom:6px!important}
-  .tab-content>p{font-size:8.5px!important;line-height:1.45;margin-bottom:9px!important}
-
-  .form-grid-2{grid-template-columns:1fr 1fr;gap:6px}
-  .form-grid-2 .full{grid-column:1 / -1}
-  #formRegistro{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-  #formRegistro .form-group-sm{margin-bottom:0}
-  #formRegistro .btn-red{grid-column:1 / -1}
-
-  .form-group-sm{margin-bottom:6px}
-  .form-group-sm label{font-size:6.5px;margin-bottom:3px}
+  .tab-btn i{font-size:11px;margin-bottom:3px}
+  .tab-content h4{font-size:18px;line-height:1.1;margin-bottom:8px}
+  .tab-content>p{font-size:9px;line-height:1.45}
+  .form-grid-2{
+    grid-template-columns:1fr 1fr;
+    gap:7px;
+  }
+  .form-group-sm{
+    margin-bottom:8px;
+  }
+  .form-group-sm label{
+    font-size:7px;
+    margin-bottom:4px;
+  }
   .form-group-sm input,
   .form-group-sm select{
-    width:100%;
-    box-sizing:border-box;
-    height:36px;
-    min-height:36px;
-    padding:0 8px;
-    font-size:9.5px;
-    border-radius:7px;
-  }
-
-  .btn-red{
-    width:100%;
-    min-height:38px;
-    padding:8px 9px;
-    margin-top:5px;
-    font-size:7.5px;
+    height:38px;
+    padding:0 9px;
+    font-size:10px;
     border-radius:8px;
   }
-  .profile-badge{padding:8px;margin-bottom:7px;font-size:7.5px}
-  #servicioSeleccionadoTexto{font-size:8px!important;line-height:1.25;margin-top:4px}
-  .my-turnos-list{max-height:175px;margin-top:8px}
-  .turno-item{padding:8px;margin-bottom:5px;gap:6px;font-size:7.5px}
-
-  #tallerPanel .btn-red,#tallerLogin .btn-red{min-height:38px}
-  #tallerPanel .form-grid-2{grid-template-columns:1fr 1fr}
-  .workshop-stats{grid-template-columns:1fr 1fr 1fr}
-
-  .main-section{padding:38px 12px}
-  .section-title{font-size:29px}
-  .section-title:before,.section-title:after{max-width:34px}
-  .services-grid{grid-template-columns:1fr;gap:10px}
-  .service-card{min-height:145px}
-  .benefits-grid{grid-template-columns:1fr}
-  .benefits-bar{padding:28px 12px}
+  .btn-red{
+    min-height:40px;
+    padding:9px 11px;
+    margin-top:7px;
+    font-size:8px;
+    border-radius:8px;
+  }
+  .profile-badge{
+    padding:10px;
+    margin-bottom:10px;
+    font-size:8px;
+  }
+  .my-turnos-list{
+    max-height:190px;
+    margin-top:10px;
+  }
+  .turno-item{
+    padding:9px;
+    margin-bottom:6px;
+    gap:8px;
+    font-size:8px;
+  }
+  #tallerPanel .btn-red,
+  #tallerLogin .btn-red{
+    min-height:40px;
+  }
+  #servicioSeleccionadoTexto{
+    font-size:9px !important;
+    line-height:1.3;
+    margin-top:6px;
+  }
 }
 
-@media (max-width:380px){
-  .hero{padding-left:8px;padding-right:8px}
-  .hero-title{font-size:44px}
-  .card-container,.turno-card-unified{max-width:336px}
-  .turno-card-unified{padding:7px}
-  .tab-btn{font-size:5.4px;min-height:40px}
-  .form-grid-2{gap:5px}
-  .form-group-sm input,.form-group-sm select{height:34px;min-height:34px;font-size:9px}
-  .btn-red{min-height:36px;font-size:7px}
+@media (max-width:400px){
+  .hero{padding-left:7px;padding-right:7px}
+  .turno-card-unified{padding:8px}
+  .tabs-header{grid-template-columns:repeat(6,minmax(60px,1fr));}
+  .tab-btn{font-size:5.6px}
+  .form-grid-2{grid-template-columns:1fr 1fr;gap:6px}
+  .form-group-sm input,.form-group-sm select{height:36px;font-size:9.5px}
+  .btn-red{min-height:38px;font-size:7.5px}
 }
 </style>
                 </head>
