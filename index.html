@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -107,6 +108,7 @@ body>div:last-child{background:#060708!important;border-color:var(--line)!import
 /* RESPONSIVE */
 @media(max-width:1180px){header{padding-inline:24px}.hero{grid-template-columns:1fr 450px}.services-grid{grid-template-columns:repeat(3,1fr)}.benefits-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:900px){header{flex-wrap:wrap;padding:16px 20px;gap:13px}.logo-text{font-size:26px}nav{order:3;flex-basis:100%;overflow-x:auto;justify-content:flex-start;padding-bottom:2px}nav a{white-space:nowrap}.hero{grid-template-columns:1fr;min-height:auto;padding-top:65px}.hero-text{max-width:760px}.card-container{max-width:620px;margin:0 auto}.hero:after{display:none}.services-grid{grid-template-columns:repeat(2,1fr)}}
+html,body{max-width:100%;overflow-x:hidden}
 @media(max-width:620px){header{min-height:auto}.nav-social{display:none}.hero{padding:48px 16px 45px;background-position:62% center}.hero-title{font-size:59px;letter-spacing:-1px}.hero-subtitle{font-size:12px}.turno-card-unified{padding:13px;border-radius:16px}.tabs-header{grid-template-columns:repeat(6,minmax(75px,1fr));overflow-x:auto;justify-content:start}.tab-btn{font-size:6.5px}.form-grid-2{grid-template-columns:1fr}.form-group-sm.full{grid-column:auto}.main-section{padding:62px 16px}.section-title{font-size:34px}.section-title:before,.section-title:after{max-width:45px}.services-grid{grid-template-columns:1fr}.service-card{min-height:165px}.benefits-grid{grid-template-columns:1fr}.benefits-bar{padding:35px 16px}.benefit-item{padding:14px}.logo-text:after{font-size:6px}}
 
 /* MEJORAS FUNCIONALES */
@@ -769,8 +771,8 @@ body>div:last-child{background:#060708!important;border-color:var(--line)!import
         // ============================================================
         // Pegá acá la URL y la PUBLISHABLE KEY de tu proyecto.
         // NUNCA pongas la service_role key en este HTML.
-        const SUPABASE_URL = "PEGAR_AQUI_URL_DE_TU_PROYECTO";
-        const SUPABASE_PUBLISHABLE_KEY = "PEGAR_AQUI_PUBLISHABLE_KEY";
+        const SUPABASE_URL = "https://eswjdtyegsjzdzvihwva.supabase.co";
+        const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_r5kRfuDyeCW7dHjIJo59jg_OMMizKwD";
         const SUPABASE_TABLE = "mas_racing_data";
         let supabaseClient = null;
         let ONLINE_DB_ACTIVA = false;
@@ -1078,7 +1080,7 @@ body>div:last-child{background:#060708!important;border-color:var(--line)!import
             }
 
             guardarEnIndexedDB('masracing_clientes', clientesBD);
-            if (ONLINE_DB_ACTIVA) guardarDatoOnline('clientes', clientesBD);
+            if (ONLINE_DB_ACTIVA) void guardarDatoOnline('clientes', clientesBD);
         }
 
         function guardarTurnosPro() {
@@ -1093,7 +1095,7 @@ body>div:last-child{background:#060708!important;border-color:var(--line)!import
             }
 
             guardarEnIndexedDB('masracing_turnos', turnosBD);
-            if (ONLINE_DB_ACTIVA) guardarDatoOnline('turnos', turnosBD);
+            if (ONLINE_DB_ACTIVA) void guardarDatoOnline('turnos', turnosBD);
         }
 
         function guardarCuponesPro() {
@@ -1108,7 +1110,7 @@ body>div:last-child{background:#060708!important;border-color:var(--line)!import
             }
 
             guardarEnIndexedDB('masracing_cupones', cuponesBD);
-            if (ONLINE_DB_ACTIVA) guardarDatoOnline('cupones', cuponesBD);
+            if (ONLINE_DB_ACTIVA) void guardarDatoOnline('cupones', cuponesBD);
         }
 
 
