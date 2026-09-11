@@ -110,33 +110,6 @@ body>div:last-child{background:#060708!important;border-color:var(--line)!import
 @media(max-width:900px){header{flex-wrap:wrap;padding:16px 20px;gap:13px}.logo-text{font-size:26px}nav{order:3;flex-basis:100%;overflow-x:auto;justify-content:flex-start;padding-bottom:2px}nav a{white-space:nowrap}.hero{grid-template-columns:1fr;min-height:auto;padding-top:65px}.hero-text{max-width:760px}.card-container{max-width:620px;margin:0 auto}.hero:after{display:none}.services-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:620px){header{min-height:auto}.nav-social{display:none}.hero{padding:48px 16px 45px;background-position:62% center}.hero-title{font-size:59px;letter-spacing:-1px}.hero-subtitle{font-size:12px}.turno-card-unified{padding:13px;border-radius:16px}.tabs-header{grid-template-columns:repeat(6,minmax(75px,1fr));overflow-x:auto;justify-content:start}.tab-btn{font-size:6.5px}.form-grid-2{grid-template-columns:1fr}.form-group-sm.full{grid-column:auto}.main-section{padding:62px 16px}.section-title{font-size:34px}.section-title:before,.section-title:after{max-width:45px}.services-grid{grid-template-columns:1fr}.service-card{min-height:165px}.benefits-grid{grid-template-columns:1fr}.benefits-bar{padding:35px 16px}.benefit-item{padding:14px}.logo-text:after{font-size:6px}}
 
-/* AJUSTE MOBILE — TURNOS (mantiene diseño y estructura) */
-@media (max-width:620px){
-  .card-container{width:100%;max-width:100%;}
-  .turno-card-unified{padding:12px;border-radius:16px;box-sizing:border-box;}
-  .tabs-header{display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;padding:4px;margin-bottom:15px;-webkit-overflow-scrolling:touch;}
-  .tabs-header::-webkit-scrollbar{display:none;}
-  .tab-btn{flex:0 0 72px;min-height:58px;padding:7px 4px;font-size:6.5px;}
-  .tab-btn i{font-size:14px;margin-bottom:3px;}
-  .tab-content h4{font-size:19px;margin-bottom:5px;}
-  .tab-content>p{font-size:10px;line-height:1.45;margin-bottom:11px;}
-  .form-grid-2{grid-template-columns:1fr;gap:0;}
-  .form-group-sm{margin-bottom:10px;}
-  .form-group-sm label{font-size:7.5px;margin-bottom:5px;}
-  .form-group-sm input,.form-group-sm select{height:40px;font-size:11px;padding:0 10px;}
-  .btn-red{min-height:42px;padding:10px 12px;font-size:9px;margin-top:7px;}
-  .profile-badge{padding:10px;margin-bottom:11px;font-size:9px;}
-  .my-turnos-list{max-height:200px;margin-top:10px;}
-  .turno-item{padding:9px;font-size:9px;}
-}
-@media (max-width:390px){
-  .hero{padding-left:12px;padding-right:12px;}
-  .turno-card-unified{padding:10px;}
-  .tabs-header{gap:4px;}
-  .tab-btn{flex-basis:67px;font-size:6px;}
-  .tab-content h4{font-size:18px;}
-}
-
 /* MEJORAS FUNCIONALES */
 .loyalty-progress{height:7px;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:99px;overflow:hidden;margin-top:8px}
 .loyalty-progress span{display:block;height:100%;background:linear-gradient(90deg,var(--red),var(--green));border-radius:99px}
@@ -220,6 +193,40 @@ body>div:last-child{background:#060708!important;border-color:var(--line)!import
 .online-status{position:fixed;right:14px;bottom:14px;z-index:9998;padding:7px 10px;border-radius:999px;font-size:8px;font-weight:900;letter-spacing:.8px;text-transform:uppercase;background:rgba(17,20,23,.92);border:1px solid var(--line);color:var(--muted);backdrop-filter:blur(8px);display:none}
 .online-status.ok{display:block;color:#63e99a;border-color:rgba(49,209,124,.35)}
 .online-status.off{display:block;color:#ffb45c;border-color:rgba(255,180,92,.35)}
+</style>
+
+<style id="mas-racing-mobile-turnos">
+@media (max-width: 600px) {
+  #turnos .panel, #turnos .card, #turnos .form-card, #turnos .turnos-panel, #turnos .turno-panel {
+    max-width: 100% !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  #turnos { overflow-x: hidden !important; }
+  #turnos input, #turnos select, #turnos textarea, #turnos button {
+    max-width: 100%; box-sizing: border-box;
+  }
+  #turnos .grid, #turnos .form-grid, #turnos .campos, #turnos .form-row {
+    grid-template-columns: 1fr !important;
+  }
+  #turnos .tabs, #turnos .turno-tabs {
+    display: flex !important; overflow-x: auto !important;
+    flex-wrap: nowrap !important; -webkit-overflow-scrolling: touch;
+    gap: 8px; padding-bottom: 6px;
+  }
+  #turnos .tabs > *, #turnos .turno-tabs > * {
+    flex: 0 0 auto !important;
+  }
+  #turnos .panel, #turnos .card, #turnos .form-card, #turnos .turnos-panel, #turnos .turno-panel {
+    padding: 16px !important; border-radius: 16px !important;
+  }
+  #turnos h1, #turnos h2, #turnos h3 { line-height: 1.15; }
+}
+@media (max-width: 380px) {
+  #turnos .panel, #turnos .card, #turnos .form-card, #turnos .turnos-panel, #turnos .turno-panel {
+    padding: 12px !important;
+  }
+}
 </style>
 </head>
 <body>
@@ -797,8 +804,8 @@ body>div:last-child{background:#060708!important;border-color:var(--line)!import
         // ============================================================
         // Pegá acá la URL y la PUBLISHABLE KEY de tu proyecto.
         // NUNCA pongas la service_role key en este HTML.
-        const SUPABASE_URL = "PEGAR_AQUI_URL_DE_TU_PROYECTO";
-        const SUPABASE_PUBLISHABLE_KEY = "PEGAR_AQUI_PUBLISHABLE_KEY";
+        const SUPABASE_URL = "https://eswjdtyegsjzdzvihwva.supabase.co";
+        const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_r5kRfuDyeCW7dHjIJo59jg_OMMizKwD";
         const SUPABASE_TABLE = "mas_racing_data";
         let supabaseClient = null;
         let ONLINE_DB_ACTIVA = false;
@@ -1447,6 +1454,19 @@ body>div:last-child{background:#060708!important;border-color:var(--line)!import
 
             turnosBD.push(nuevoTurno);
             guardarTurnosPro();
+
+            // Confirmamos la persistencia online antes de abrir WhatsApp.
+            // Si Supabase está disponible, el turno queda guardado en la nube.
+            if (ONLINE_DB_ACTIVA && supabaseClient) {
+                const guardadoOnline = await guardarDatoOnline("turnos", turnosBD);
+                if (!guardadoOnline) {
+                    turnosBD = turnosBD.filter(t => t.id !== nuevoTurno.id);
+                    guardarTurnosPro();
+                    ocultarLoaderMoto();
+                    alert("No se pudo guardar el turno en la base online. Revisá tu conexión e intentá nuevamente.");
+                    return;
+                }
+            }
 
             const mensaje = `Hola *MAS RACING*! Confirmación de Turno Reservado:%0A%0A` +
                             `👤 *Cliente:* ${clientesBD[dni].nombre} (DNI: ${dni})%0A` +
